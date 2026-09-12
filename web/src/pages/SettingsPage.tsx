@@ -135,10 +135,8 @@ export function SettingsPage({ onChanged }: { onChanged: () => void }) {
               onChange={(event) => setRemember(event.target.checked)}
             />
             <span>
-              Remember on this device. Default is this browser tab only
-              (sessionStorage). Checking this stores the key in localStorage —
-              convenient, but anyone with this phone/browser profile can read it.
-              Prefer session-only on a shared computer.
+              Remember on this device (localStorage). Unchecked = this tab only
+              (sessionStorage). A shared phone can read a remembered key.
             </span>
           </label>
           <label className="field">

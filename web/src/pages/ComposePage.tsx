@@ -131,7 +131,7 @@ export function ComposePage() {
         </button>
       </header>
 
-      <main className="page">
+      <main className="page compose">
         <div className="card contact-row">
           <div className="avatar">{(contact.displayName || "L").slice(0, 1)}</div>
           <div style={{ flex: 1 }}>
@@ -149,7 +149,7 @@ export function ComposePage() {
         ) : null}
 
         <div className="chat" ref={listRef}>
-          {messages.length === 0 ? (
+          {messages.length === 0 && !currentDraft ? (
             <div className="card">
               <strong>Draft with Luis in English</strong>
               <p className="muted">
@@ -180,6 +180,7 @@ export function ComposePage() {
           {working ? <div className="working">Polishing…</div> : null}
         </div>
 
+        <div className="composer-dock">
         {error ? <Banner text={error} /> : null}
 
         {!hasKey ? (
@@ -229,6 +230,7 @@ export function ComposePage() {
           >
             {translating ? "Translating…" : "Translate to Spanish"}
           </button>
+        </div>
         </div>
       </main>
 

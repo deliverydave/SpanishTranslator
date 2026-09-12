@@ -57,18 +57,20 @@ a {
 }
 
 .app {
-  min-height: 100dvh;
+  height: 100dvh;
   max-width: 520px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   background: var(--bg);
+  overflow: hidden;
 }
 
 .topbar {
   position: sticky;
   top: 0;
   z-index: 5;
+  flex: none;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -98,10 +100,33 @@ a {
 
 .page {
   flex: 1;
-  padding: 16px 16px calc(96px + env(safe-area-inset-bottom));
+  min-height: 0;
+  padding: 16px 16px 12px;
   display: flex;
   flex-direction: column;
   gap: 14px;
+  overflow: auto;
+}
+
+.page.compose {
+  overflow: hidden;
+}
+
+.chat {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.composer-dock {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 4px;
+  background: var(--bg);
 }
 
 .card {
@@ -167,12 +192,6 @@ a {
   background: color-mix(in srgb, var(--teal) 16%, var(--card));
   color: var(--teal);
   font-weight: 800;
-}
-
-.chat {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
 }
 
 .bubble {
@@ -275,6 +294,7 @@ textarea {
 .tabs {
   position: sticky;
   bottom: 0;
+  flex: none;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 6px;
