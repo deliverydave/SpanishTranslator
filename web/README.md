@@ -62,27 +62,75 @@ On iPhone Safari the link looks like `sms:+1555…&body=…`. Android uses `sms:
 2. If a vision-capable model (default `gpt-4o-mini`) and an API key are set, the screenshot is sent to that model. Otherwise [Tesseract.js](https://tesseract.projectnaptha.com/) runs in the browser.
 3. Edit the extracted Spanish, then **Translate to English**.
 
-## Deploy to a public HTTPS URL (Vercel)
+## Deploy on Hostinger (`translate.deliverydave.ai`)
 
-Safari on a phone will not call `http://your-pc:5173` once you leave home Wi‑Fi. A free [Vercel](https://vercel.com) project gives you `https://….vercel.app`.
+Primary path: your domain **deliverydave.ai** is on **Hostinger**. Use a **subdomain** so this app does not overwrite the root site.
 
-You need your own Vercel account (GitHub login is the usual path). This repo does not include credentials.
+**Recommended URL:** `https://translate.deliverydave.ai`
 
-1. Push this repository to GitHub (already the case if you are using the PR).
-2. Go to [vercel.com/new](https://vercel.com/new) and import `deliverydave/SpanishTranslator`.
-3. Set **Root Directory** to `web`.
-4. Framework preset: Vite. Build command `npm run build`, output `dist`.
-5. Deploy. Do **not** put your OpenAI key in Vercel environment variables for this MVP — each user pastes their key in Settings.
+A `/translator` subfolder also works if you prefer not to add a subdomain; then you would open `https://deliverydave.ai/translator/`. The files below assume the subdomain (cleaner on iPhone, and `/api/chat` stays at the site root).
 
-The `web/api/chat.ts` function is the CORS proxy. After deploy, open the `https://` URL in Safari. Share → **Add to Home Screen** for a PWA-style icon.
+OpenAI blocks browser calls (CORS), so a same-origin proxy is required. On Hostinger that is the PHP file `api/chat.php` (copied into `dist/` on build) plus `.htaccess`, which rewrites `/api/chat` → `api/chat.php`. PHP + curl must be enabled (default on Hostinger web hosting). Do **not** put your API key in Hostinger — users paste it in Settings.
 
-### Netlify
+This repo does not include Hostinger or DNS passwords. You do those clicks in hPanel.
 
-Same idea: base directory `web`, build `npm run build`, publish `dist`. Add a redirect so `/api/chat` is a Netlify Function if you use Netlify — the checked-in function is written for **Vercel**. Prefer Vercel unless you already use Netlify.
+### 1. Build on Windows
 
-### GitHub Pages
+```bat
+cd web
+npm install
+npm run build
+```
 
-Not a good fit. Pages is static only, so `/api/chat` would be missing and OpenAI CORS would block the browser.
+Upload **everything inside** `web\dist\` (not the `web` folder itself):
+
+- `index.html`, `assets\`, `manifest.webmanifest`, icons
+- `api\chat.php` (the CORS proxy)
+- `.htaccess` (rewrites + Authorization header pass-through)
+
+### 2. Create the subdomain in Hostinger hPanel
+
+1. Log in to [hPanel](https://hpanel.hostinger.com).
+2. **Domains** → **deliverydave.ai** → **Subdomains** (wording varies: *Subdomains* or *DNS / Zone Editor*).
+3. Add subdomain **`translate`**.
+4. Point it at a new folder, for example `public_html/translate` (create the folder if hPanel does not).
+5. Wait until Hostinger says the subdomain is active. SSL: enable **SSL** / Let’s Encrypt for `translate.deliverydave.ai` (hPanel → SSL). Safari on iPhone needs HTTPS.
+
+DNS (only if hPanel did not add it for you): an **A** record for `translate` to the same Hostinger site IP as `deliverydave.ai`, or a **CNAME** `translate` → `deliverydave.ai`. TTL can stay default. Do not change the root `@` record unless you intend to move the main site.
+
+### 3. Upload `dist/`
+
+**File Manager**
+
+1. hPanel → **Files** → **File Manager**.
+2. Open `public_html/translate` (or the folder you assigned).
+3. Upload the *contents* of `web\dist`. If the manager wants a zip: zip the inside of `dist`, upload, extract, delete the zip.
+
+**FTP (FileZilla or Windows)**
+
+- Host / user / password: hPanel → **Files** → **FTP Accounts**.
+- Remote directory: `/public_html/translate`
+- Upload the contents of `web\dist`.
+
+### 4. Open it on the iPhone
+
+Visit `https://translate.deliverydave.ai`. In Safari: **Share → Add to Home Screen**.
+
+If compose/translate returns a 404 on `/api/chat`, `.htaccess` did not upload or Apache rewrites are off. Upload `.htaccess` again (it is a hidden file — show hidden files in File Manager). If PHP is disabled, ask Hostinger support to enable PHP curl for that site.
+
+### Optional: `/translator` on the root site
+
+Upload `dist/` into `public_html/translator`. You would then need the built asset paths to include that prefix (`vite.config.ts` `base: '/translator/'`) — not the default. Prefer the subdomain unless you want to change `base`.
+
+## Optional: Vercel or Netlify
+
+Use these if you want a managed Node proxy instead of PHP.
+
+**Vercel:** [vercel.com/new](https://vercel.com/new) → import this repo → **Root Directory** `web` → Vite, `npm run build`, output `dist`. Custom domain: Vercel → Project → Settings → Domains → add `translate.deliverydave.ai`, then in Hostinger DNS add the **CNAME** Vercel shows (often `cname.vercel-dns.com`). Do not put the OpenAI key in Vercel env vars for this MVP.
+
+**Netlify:** base `web`, publish `dist`. The checked-in serverless function is written for Vercel; on Netlify you would need a Netlify Function. Prefer Hostinger or Vercel.
+
+**GitHub Pages:** static only unless you add a proxy elsewhere — skip.
 
 ## Add to Home Screen
 
