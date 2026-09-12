@@ -1,0 +1,392 @@
+:root {
+  color-scheme: light dark;
+  --teal: #146b68;
+  --teal-soft: #1f8c87;
+  --sand: #f7edde;
+  --ink: #1e292c;
+  --coral: #dc6e54;
+  --bg: #f3f1ec;
+  --card: #fffdf9;
+  --line: rgba(20, 36, 40, 0.08);
+  --muted: #5d6b6e;
+  --shadow: 0 10px 30px rgba(20, 40, 40, 0.08);
+  font-family: "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+  line-height: 1.4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121716;
+    --card: #1b2221;
+    --ink: #f3efe7;
+    --sand: #2a2620;
+    --line: rgba(255, 255, 255, 0.08);
+    --muted: #b4bfc0;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button {
+  color: inherit;
+}
+
+a {
+  color: var(--teal);
+}
+
+.app {
+  height: 100dvh;
+  max-width: 520px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  overflow: hidden;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: calc(10px + env(safe-area-inset-top)) 16px 10px;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--line);
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.ghost {
+  border: 0;
+  background: transparent;
+  color: var(--teal);
+  font-weight: 650;
+  padding: 8px 4px;
+}
+
+.ghost:disabled {
+  opacity: 0.4;
+}
+
+.page {
+  flex: 1;
+  min-height: 0;
+  padding: 16px 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow: auto;
+}
+
+.page.compose {
+  overflow: hidden;
+}
+
+.chat {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.composer-dock {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 4px;
+  background: var(--bg);
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: var(--shadow);
+}
+
+.sand {
+  background: var(--sand);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.tiny {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--teal);
+}
+
+.banner {
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 0.92rem;
+}
+
+.banner.error {
+  background: color-mix(in srgb, var(--coral) 14%, var(--card));
+  color: color-mix(in srgb, var(--coral) 80%, var(--ink));
+}
+
+.banner.info {
+  background: color-mix(in srgb, var(--teal) 10%, var(--card));
+}
+
+.contact-row,
+.draft-card,
+.field,
+.bubble {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.contact-row {
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--teal) 16%, var(--card));
+  color: var(--teal);
+  font-weight: 800;
+}
+
+.bubble {
+  max-width: 88%;
+  padding: 10px 12px;
+  border-radius: 16px;
+}
+
+.bubble.user {
+  align-self: flex-end;
+  background: var(--teal);
+  color: white;
+}
+
+.bubble.assistant {
+  align-self: flex-start;
+  background: var(--card);
+  border: 1px solid var(--line);
+}
+
+.composer {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+textarea,
+input[type="text"],
+input[type="tel"],
+input[type="url"],
+input[type="password"] {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  border-radius: 14px;
+  padding: 12px;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 88px;
+}
+
+.send {
+  width: 48px;
+  height: 48px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--teal);
+  color: white;
+  font-size: 1.2rem;
+  flex: none;
+}
+
+.send:disabled {
+  background: #9aa5a4;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.primary,
+.secondary {
+  border: 0;
+  border-radius: 14px;
+  padding: 13px 14px;
+  font-weight: 700;
+  flex: 1;
+  min-height: 48px;
+}
+
+.primary {
+  background: var(--teal);
+  color: white;
+}
+
+.primary:disabled,
+.secondary:disabled {
+  opacity: 0.45;
+}
+
+.secondary {
+  background: color-mix(in srgb, var(--teal) 10%, var(--card));
+  color: var(--teal);
+  border: 1px solid color-mix(in srgb, var(--teal) 22%, transparent);
+}
+
+.danger {
+  background: transparent;
+  color: var(--coral);
+  border: 0;
+  font-weight: 700;
+  padding: 10px 0;
+}
+
+.tabs {
+  position: sticky;
+  bottom: 0;
+  flex: none;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  padding: 8px 10px calc(10px + env(safe-area-inset-bottom));
+  background: color-mix(in srgb, var(--card) 92%, transparent);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid var(--line);
+}
+
+.tab {
+  border: 0;
+  background: transparent;
+  border-radius: 12px;
+  padding: 8px 6px 6px;
+  color: var(--muted);
+}
+
+.tab.active {
+  background: color-mix(in srgb, var(--teal) 12%, transparent);
+  color: var(--teal);
+  font-weight: 700;
+}
+
+.tab small {
+  display: block;
+  font-size: 0.72rem;
+}
+
+.sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 16, 16, 0.45);
+  z-index: 20;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.sheet {
+  width: min(520px, 100%);
+  max-height: 92dvh;
+  overflow: auto;
+  background: var(--bg);
+  border-radius: 20px 20px 0 0;
+  padding: 16px 16px calc(20px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dropzone {
+  border: 1.5px dashed color-mix(in srgb, var(--teal) 45%, var(--line));
+  border-radius: 16px;
+  padding: 18px;
+  text-align: center;
+  background: color-mix(in srgb, var(--teal) 6%, var(--card));
+}
+
+.hidden-file {
+  display: none;
+}
+
+.switch {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.switch input {
+  margin-top: 4px;
+}
+
+label.field > span {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.working {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: color-mix(in srgb, var(--coral) 14%, var(--card));
+  color: var(--coral);
+}
