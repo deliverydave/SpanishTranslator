@@ -16,7 +16,7 @@ npm install
 npm run dev
 ```
 
-Setup, API key storage, and **Hostinger** deploy to `translate.deliverydave.ai`: **[web/README.md](web/README.md)**.
+Setup, API key storage, and deploy to **`https://translate.deliverydave.ai`** (Hostinger primary; Vercel/Netlify optional): **[web/README.md](web/README.md)**.
 
 That is the supported way to use SpanishTranslator today.
 
@@ -44,7 +44,7 @@ Details that used to live here (permissions, simulator vs device) still apply to
 
 ```
 web/                         ← use this (Windows + iPhone Safari)
-  README.md                  Windows run + Vercel deploy
+  README.md                  Windows run + deliverydave.ai deploy
   src/                       Compose, Inbox, Settings
   api/chat.ts                Vite / Vercel CORS proxy
   public/api/chat.php        Hostinger CORS proxy (static + PHP)

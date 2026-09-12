@@ -6,6 +6,8 @@ Draft English → polish in a chat → translate to Spanish → open Messages wi
 
 The site cannot send SMS by itself or read the Messages inbox. You always tap Send in Messages.
 
+**Public URL (default):** [https://translate.deliverydave.ai](https://translate.deliverydave.ai) — a subdomain of **deliverydave.ai** so the existing root site is not overwritten. `https://deliverydave.ai/translator/` is the fallback if you prefer a folder on the main site (see below). DNS and SSL are steps you run in your host’s panel; this repo has no domain credentials.
+
 ## Run on Windows
 
 You need [Node.js 18+](https://nodejs.org/) (LTS is fine).
@@ -122,15 +124,33 @@ If compose/translate returns a 404 on `/api/chat`, `.htaccess` did not upload or
 
 Upload `dist/` into `public_html/translator`. You would then need the built asset paths to include that prefix (`vite.config.ts` `base: '/translator/'`) — not the default. Prefer the subdomain unless you want to change `base`.
 
-## Optional: Vercel or Netlify
+## Optional: Vercel or Netlify (custom domain on deliverydave.ai)
 
-Use these if you want a managed Node proxy instead of PHP.
+Use these only if you want a managed Node `/api/chat` proxy instead of Hostinger PHP. The public hostname should still be **`translate.deliverydave.ai`**. Do not put your OpenAI key in host environment variables — paste it in the app Settings.
 
-**Vercel:** [vercel.com/new](https://vercel.com/new) → import this repo → **Root Directory** `web` → Vite, `npm run build`, output `dist`. Custom domain: Vercel → Project → Settings → Domains → add `translate.deliverydave.ai`, then in Hostinger DNS add the **CNAME** Vercel shows (often `cname.vercel-dns.com`). Do not put the OpenAI key in Vercel env vars for this MVP.
+This repo cannot log into Vercel, Netlify, or your DNS. You attach the domain yourself.
 
-**Netlify:** base `web`, publish `dist`. The checked-in serverless function is written for Vercel; on Netlify you would need a Netlify Function. Prefer Hostinger or Vercel.
+### Vercel → translate.deliverydave.ai
 
-**GitHub Pages:** static only unless you add a proxy elsewhere — skip.
+1. [vercel.com/new](https://vercel.com/new) → import `deliverydave/SpanishTranslator`.
+2. **Root Directory** = `web`. Framework Vite, build `npm run build`, output `dist`. Deploy.
+3. Project → **Settings → Domains** → add `translate.deliverydave.ai`.
+4. Vercel shows a DNS record (usually a **CNAME** `translate` → `cname.vercel-dns.com`, sometimes an A record). Copy it exactly.
+5. In Hostinger hPanel → **DNS / Zone Editor** for `deliverydave.ai`, add that record. Do **not** change the root `@` A record (that would move deliverydave.ai itself).
+6. Wait for DNS (often minutes, sometimes up to a few hours). Vercel will issue HTTPS. Open `https://translate.deliverydave.ai`.
+
+If `translate` already points at Hostinger `public_html/translate`, remove or replace that Hostinger A/CNAME first — a name can only point at one place.
+
+### Netlify → translate.deliverydave.ai
+
+1. New site → this GitHub repo → base directory `web`, publish `dist`, build `npm run build`.
+2. Site → **Domain management** → **Add custom domain** → `translate.deliverydave.ai`.
+3. Netlify shows a **CNAME** (often `translate` → `something.netlify.app`). Add that in Hostinger DNS the same way as above.
+4. The checked-in serverless function is written for **Vercel**. On Netlify, `/api/chat` will 404 unless you add a Netlify Function. Prefer Hostinger (PHP already in `dist`) or Vercel.
+
+### GitHub Pages
+
+Static only — no `/api/chat` proxy. Skip unless you host the proxy somewhere else.
 
 ## Add to Home Screen
 
