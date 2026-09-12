@@ -10,6 +10,11 @@ DerivedData/
 *.dSYM
 .swiftpm/
 .build/
+node_modules/
+dist/
+.vercel/
+.env
+.env.*
 *.playground
 timeline.xctimeline
 playground.xcworkspace
