@@ -16,7 +16,7 @@ npm install
 npm run dev
 ```
 
-Setup, API key storage, and deploy to **`https://translate.deliverydave.ai`** (Hostinger primary; Vercel/Netlify optional): **[web/README.md](web/README.md)**.
+Host the production site on **Hostinger** at **`https://translate.deliverydave.ai`** (static `web/dist` upload). Setup, API key storage, hPanel/FTP steps: **[web/README.md](web/README.md)**. Vercel/Netlify are optional.
 
 That is the supported way to use SpanishTranslator today.
 

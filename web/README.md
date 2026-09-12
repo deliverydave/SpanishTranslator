@@ -64,17 +64,25 @@ On iPhone Safari the link looks like `sms:+1555…&body=…`. Android uses `sms:
 2. If a vision-capable model (default `gpt-4o-mini`) and an API key are set, the screenshot is sent to that model. Otherwise [Tesseract.js](https://tesseract.projectnaptha.com/) runs in the browser.
 3. Edit the extracted Spanish, then **Translate to English**.
 
-## Deploy on Hostinger (`translate.deliverydave.ai`)
+## Deploy on Hostinger (primary)
 
-Primary path: your domain **deliverydave.ai** is on **Hostinger**. Use a **subdomain** so this app does not overwrite the root site.
+**deliverydave.ai is on Hostinger.** Ship a **static Vite build** (`web\dist\`) there. Do not point the root domain at this app.
 
-**Recommended URL:** `https://translate.deliverydave.ai`
+| Choice | URL | When to use |
+|---|---|---|
+| **Recommended** | `https://translate.deliverydave.ai` | New subdomain + folder `public_html/translate` — no collision with the existing site |
+| Fallback | `https://deliverydave.ai/translator/` | Subfolder on the main site if your plan makes subdomains awkward (needs a Vite `base` change; see below) |
 
-A `/translator` subfolder also works if you prefer not to add a subdomain; then you would open `https://deliverydave.ai/translator/`. The files below assume the subdomain (cleaner on iPhone, and `/api/chat` stays at the site root).
+OpenAI blocks browser calls (CORS). Hostinger uses `api/chat.php` plus `.htaccess` (both land in `dist/` on build). PHP + curl are on by default. **Do not** store your API key in hPanel — paste it in the app Settings.
 
-OpenAI blocks browser calls (CORS), so a same-origin proxy is required. On Hostinger that is the PHP file `api/chat.php` (copied into `dist/` on build) plus `.htaccess`, which rewrites `/api/chat` → `api/chat.php`. PHP + curl must be enabled (default on Hostinger web hosting). Do **not** put your API key in Hostinger — users paste it in Settings.
+This repo has no Hostinger or DNS passwords.
 
-This repo does not include Hostinger or DNS passwords. You do those clicks in hPanel.
+### Checklist
+
+1. Build `web\dist\` on Windows.
+2. In hPanel, create subdomain `translate` → folder `public_html/translate` → enable SSL.
+3. Upload the **inside** of `dist\` (including hidden `.htaccess`).
+4. Open `https://translate.deliverydave.ai` on the iPhone.
 
 ### 1. Build on Windows
 
@@ -84,35 +92,40 @@ npm install
 npm run build
 ```
 
-Upload **everything inside** `web\dist\` (not the `web` folder itself):
+Windows Explorer: `SpanishTranslator\web\dist\`
+
+Upload **that folder’s contents**, not `web` and not a nested extra `dist`. After upload, `public_html/translate/index.html` should exist.
+
+Must include:
 
 - `index.html`, `assets\`, `manifest.webmanifest`, icons
-- `api\chat.php` (the CORS proxy)
-- `.htaccess` (rewrites + Authorization header pass-through)
+- `api\chat.php` (CORS proxy)
+- `.htaccess` (rewrites `/api/chat` and passes the Authorization header)
 
-### 2. Create the subdomain in Hostinger hPanel
+### 2. Subdomain + DNS in Hostinger hPanel
 
 1. Log in to [hPanel](https://hpanel.hostinger.com).
-2. **Domains** → **deliverydave.ai** → **Subdomains** (wording varies: *Subdomains* or *DNS / Zone Editor*).
-3. Add subdomain **`translate`**.
-4. Point it at a new folder, for example `public_html/translate` (create the folder if hPanel does not).
-5. Wait until Hostinger says the subdomain is active. SSL: enable **SSL** / Let’s Encrypt for `translate.deliverydave.ai` (hPanel → SSL). Safari on iPhone needs HTTPS.
+2. Open **deliverydave.ai**.
+3. **Subdomains** (sometimes under *Domains* or *DNS / Zone Editor*).
+4. Create **`translate`**. Custom folder: `public_html/translate` (create it if hPanel does not).
+5. **SSL**: enable Let’s Encrypt / SSL for `translate.deliverydave.ai`. iPhone Safari needs HTTPS.
 
-DNS (only if hPanel did not add it for you): an **A** record for `translate` to the same Hostinger site IP as `deliverydave.ai`, or a **CNAME** `translate` → `deliverydave.ai`. TTL can stay default. Do not change the root `@` record unless you intend to move the main site.
+If hPanel did not add DNS: **DNS / Zone Editor** → **A** `translate` → same IPv4 as `deliverydave.ai`, or **CNAME** `translate` → `deliverydave.ai`. Leave TTL default. **Do not** edit the root `@` A record.
 
-### 3. Upload `dist/`
+### 3. Upload `dist/` (File Manager or FTP)
 
 **File Manager**
 
 1. hPanel → **Files** → **File Manager**.
-2. Open `public_html/translate` (or the folder you assigned).
-3. Upload the *contents* of `web\dist`. If the manager wants a zip: zip the inside of `dist`, upload, extract, delete the zip.
+2. Enable **Show hidden files** (otherwise `.htaccess` will not upload).
+3. Open `public_html/translate`.
+4. Upload the *contents* of `web\dist`. Zip option: zip the files *inside* `dist`, upload, extract, delete the zip.
 
 **FTP (FileZilla or Windows)**
 
-- Host / user / password: hPanel → **Files** → **FTP Accounts**.
+- Host / user / password: hPanel → **Files** → **FTP Accounts** (this repo does not have them).
 - Remote directory: `/public_html/translate`
-- Upload the contents of `web\dist`.
+- Upload the contents of `web\dist`, including `.htaccess`.
 
 ### 4. Open it on the iPhone
 
