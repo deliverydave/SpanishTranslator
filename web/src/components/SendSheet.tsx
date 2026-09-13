@@ -2,6 +2,7 @@ import { useState } from "react";
 import { smsHref, canOpenSms } from "../lib/sms";
 import type { Contact } from "../lib/storage";
 import { Banner } from "./Banner";
+import { SpeakButton } from "./SpeakButton";
 
 type Props = {
   english: string;
@@ -87,15 +88,22 @@ export function SendSheet({
 
         {note ? <Banner text={note} tone="info" /> : null}
 
-        <button className="primary" type="button" disabled={!canSend} onClick={openMessages}>
+        <SpeakButton
+          text={spanish}
+          lang="es"
+          label="Speak Spanish"
+          variant="primary"
+        />
+        <button className="secondary" type="button" disabled={!canSend} onClick={openMessages}>
           Open Messages
         </button>
         <button className="secondary" type="button" onClick={() => void copySpanish()}>
           {copied ? "Copied" : "Copy Spanish"}
         </button>
         <p className="muted tiny" style={{ textTransform: "none", fontWeight: 400 }}>
-          Safari opens Messages with Luis and this text filled in. You still tap Send.
-          The site cannot send SMS by itself.
+          Speak Spanish reads the current text out loud (including your edits) so Luis
+          can listen. It does not send a text. Open Messages is separate — Safari
+          fills in Luis and the Spanish; you still tap Send.
         </p>
       </div>
     </div>

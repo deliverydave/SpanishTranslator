@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Banner } from "../components/Banner";
 import { SendSheet } from "../components/SendSheet";
+import { SpeakButton } from "../components/SpeakButton";
 import { complete } from "../lib/api";
 import { COMPOSE_SYSTEM, EN_TO_ES } from "../lib/prompts";
 import {
@@ -145,6 +146,7 @@ export function ComposePage() {
           <div className="card sand">
             <div className="tiny">English draft</div>
             <div>{currentDraft}</div>
+            <SpeakButton text={currentDraft} lang="en" label="Read aloud" variant="ghost" />
           </div>
         ) : null}
 
