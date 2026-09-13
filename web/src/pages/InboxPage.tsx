@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import { Banner } from "../components/Banner";
+import { SpeakButton } from "../components/SpeakButton";
 import { complete } from "../lib/api";
 import { extractSpanishFromImage } from "../lib/ocr";
 import { ES_TO_EN } from "../lib/prompts";
@@ -194,16 +195,19 @@ export function InboxPage() {
           <div className="card sand">
             <div className="tiny">English</div>
             <div>{english}</div>
-            <button
-              className="ghost"
-              type="button"
-              onClick={() => {
-                void navigator.clipboard.writeText(english);
-                setCopied(true);
-              }}
-            >
-              {copied ? "Copied" : "Copy"}
-            </button>
+            <div className="row">
+              <SpeakButton text={english} lang="en" label="Read aloud" variant="ghost" />
+              <button
+                className="ghost"
+                type="button"
+                onClick={() => {
+                  void navigator.clipboard.writeText(english);
+                  setCopied(true);
+                }}
+              >
+                {copied ? "Copied" : "Copy"}
+              </button>
+            </div>
           </div>
         ) : null}
 

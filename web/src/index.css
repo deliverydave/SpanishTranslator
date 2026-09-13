@@ -273,7 +273,8 @@ textarea {
 }
 
 .primary:disabled,
-.secondary:disabled {
+.secondary:disabled,
+.ghost:disabled {
   opacity: 0.45;
 }
 

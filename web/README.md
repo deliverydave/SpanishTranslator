@@ -53,8 +53,8 @@ Do not check “remember” on a computer you do not trust.
 2. Send tweaks (`Good morning Luis`, `don’t say 25%, say seems like rain`).
 3. The English draft card always shows the current full message. **Use as draft** skips the model and uses your typed English.
 4. **Translate to Spanish**.
-5. Edit the Spanish if you want. **Open Messages** uses an `sms:` link with Luis’s number and the encoded body. **Copy Spanish** is the fallback.
-6. Tap **Send** in Messages.
+5. Edit the Spanish if you want. If Luis is next to you, tap **Speak Spanish** — the phone reads the current Spanish out loud (your edits included). It does **not** send a text.
+6. **Open Messages** is separate: an `sms:` link with Luis’s number and the encoded body. **Copy Spanish** is the fallback. Tap **Send** in Messages if you are texting.
 
 On iPhone Safari the link looks like `sms:+1555…&body=…`. Android uses `sms:+1555…?body=…`.
 
@@ -63,6 +63,14 @@ On iPhone Safari the link looks like `sms:+1555…&body=…`. Android uses `sms:
 1. **Inbox** — **Paste text**, or **Choose screenshot** / paste an image into the drop zone.
 2. If a vision-capable model (default `gpt-4o-mini`) and an API key are set, the screenshot is sent to that model. Otherwise [Tesseract.js](https://tesseract.projectnaptha.com/) runs in the browser.
 3. Edit the extracted Spanish, then **Translate to English**.
+
+## Read aloud
+
+After **Translate to Spanish**, tap **Speak Spanish**. The phone speaks the text in the Spanish box (including edits) using the browser [Web Speech API](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis) — no extra API key. It does **not** open Messages or send SMS.
+
+The button becomes **Stop** while speaking, and stays disabled if the Spanish box is empty. Safari on iPhone uses a Spanish voice when one is installed (`es-MX` preferred, then other `es-*`). Turn the ringer/silent switch off and raise volume if you hear nothing.
+
+**Read aloud** is also on the English draft (Compose) and the English result (Inbox).
 
 ## Deploy on Hostinger (primary)
 
