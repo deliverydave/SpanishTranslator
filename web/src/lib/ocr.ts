@@ -1,6 +1,6 @@
 import { complete, looksVisionCapable } from "./api";
 import { EXTRACT_SPANISH } from "./prompts";
-import { getApiKey, loadApiSettings } from "./storage";
+import { loadApiSettings } from "./storage";
 
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
@@ -91,7 +91,7 @@ export async function extractSpanishFromImage(
 ): Promise<{ text: string; source: string }> {
   const dataUrl = await compressImage(file);
   const settings = loadApiSettings();
-  const canVision = Boolean(getApiKey()) && looksVisionCapable(settings.model);
+  const canVision = looksVisionCapable(settings.model);
 
   if (canVision) {
     onStatus?.("Reading screenshot with the vision model…");

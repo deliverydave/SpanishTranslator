@@ -1,3 +1,5 @@
+import { SPEECH_RATE } from "./defaults";
+
 export type SpeakLang = "es" | "en";
 
 const LANG_TAGS: Record<SpeakLang, string[]> = {
@@ -46,7 +48,7 @@ export function speakText(text: string, lang: SpeakLang): SpeechSynthesisUtteran
 
   const utterance = new SpeechSynthesisUtterance(trimmed);
   utterance.lang = preferredLangTag(lang);
-  utterance.rate = lang === "es" ? 0.95 : 1;
+  utterance.rate = SPEECH_RATE;
   const match = pickVoice(loadVoices(), lang);
   if (match) {
     const live = loadVoices().find((voice) => voice.name === match.name && voice.lang === match.lang);

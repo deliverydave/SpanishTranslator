@@ -8,8 +8,8 @@ describe("stripWrappingQuotes", () => {
 });
 
 describe("looksVisionCapable", () => {
-  it("treats gpt-4o-mini as vision-capable", () => {
-    expect(looksVisionCapable("gpt-4o-mini")).toBe(true);
+  it("treats grok-4.6 as vision-capable", () => {
+    expect(looksVisionCapable("grok-4.6")).toBe(true);
     expect(looksVisionCapable("gpt-3.5-turbo")).toBe(false);
   });
 });

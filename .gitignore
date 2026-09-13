@@ -15,6 +15,7 @@ dist/
 .vercel/
 .env
 .env.*
+**/config.local.php
 *.playground
 timeline.xctimeline
 playground.xcworkspace

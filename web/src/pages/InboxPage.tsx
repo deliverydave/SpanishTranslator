@@ -4,7 +4,6 @@ import { SpeakButton } from "../components/SpeakButton";
 import { complete } from "../lib/api";
 import { extractSpanishFromImage } from "../lib/ocr";
 import { ES_TO_EN } from "../lib/prompts";
-import { getApiKey } from "../lib/storage";
 
 export function InboxPage() {
   const [spanish, setSpanish] = useState("");
@@ -72,10 +71,6 @@ export function InboxPage() {
       setError("Paste or read the Spanish first.");
       return;
     }
-    if (!getApiKey()) {
-      setError("Add an API key in Settings to translate.");
-      return;
-    }
     setBusy(true);
     setError(null);
     try {
@@ -116,8 +111,8 @@ export function InboxPage() {
           <strong>Luis replied</strong>
           <p className="muted">
             Paste the Spanish text, or drop a screenshot of the Messages bubble.
-            A vision model reads it when your key is set; otherwise Tesseract OCR
-            runs in the browser.
+            Grok reads the screenshot when the server key is set; otherwise
+            Tesseract OCR runs in the browser.
           </p>
           {source ? <div className="tiny">{source}</div> : null}
         </div>

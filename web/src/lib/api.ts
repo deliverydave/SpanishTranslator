@@ -28,16 +28,15 @@ export async function complete(
   temperature = 0.4,
 ): Promise<string> {
   const key = getApiKey();
-  if (!key) {
-    throw new Error("Add an OpenAI-compatible API key in Settings to continue.");
-  }
   const settings = loadApiSettings();
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+  if (key) headers.Authorization = `Bearer ${key}`;
+
   const response = await fetch("/api/chat", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${key}`,
-    },
+    headers,
     body: JSON.stringify({
       baseURL: settings.baseURL,
       model: settings.model,
@@ -55,7 +54,8 @@ export async function complete(
 
   if (!response.ok) {
     const message =
-      parsed.error?.message || `API error ${response.status}. Check Settings.`;
+      parsed.error?.message ||
+      `API error ${response.status}. Check the server key (Hostinger config.local.php).`;
     throw new Error(message);
   }
 

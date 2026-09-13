@@ -16,7 +16,7 @@ npm install
 npm run dev
 ```
 
-Host the production site on **Hostinger** at **`https://translate.deliverydave.ai`** (static `web/dist` upload). Setup, API key storage, hPanel/FTP steps: **[web/README.md](web/README.md)**. Vercel/Netlify are optional.
+Host the production site on **Hostinger** at **`https://translate.deliverydave.ai`** (static `web/dist` upload). Grok host/model are built in; put the xAI key once in Hostinger `api/config.local.php` (never in git). Details: **[web/README.md](web/README.md)**.
 
 That is the supported way to use SpanishTranslator today.
 

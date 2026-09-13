@@ -1,6 +1,8 @@
 import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
+import { unlink } from "node:fs/promises";
 import type { IncomingMessage, ServerResponse } from "node:http";
+import { resolve } from "node:path";
 import { handleChatRequest, type ChatPayload } from "./api/forward";
 
 function readJsonBody(req: IncomingMessage): Promise<ChatPayload> {
@@ -70,8 +72,17 @@ function chatProxy(): Plugin {
   };
 }
 
+function stripLocalSecrets(): Plugin {
+  return {
+    name: "strip-local-secrets",
+    async closeBundle() {
+      await unlink(resolve("dist/api/config.local.php")).catch(() => undefined);
+    },
+  };
+}
+
 export default defineConfig({
-  plugins: [react(), chatProxy()],
+  plugins: [react(), chatProxy(), stripLocalSecrets()],
   server: {
     host: true,
     port: 5173,

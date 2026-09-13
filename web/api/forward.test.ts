@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { assertSafeBaseURL, handleChatRequest, normalizeBaseURL } from "./forward";
+import {
+  assertSafeBaseURL,
+  coerceUpstream,
+  DEFAULT_BASE,
+  DEFAULT_MODEL,
+  handleChatRequest,
+  normalizeBaseURL,
+} from "./forward";
 
 describe("normalizeBaseURL", () => {
   it("adds https and /v1 for api.openai.com", () => {
@@ -21,9 +28,18 @@ describe("assertSafeBaseURL", () => {
     expect(() => assertSafeBaseURL("https://192.168.1.9/v1")).toThrow(/not allowed/);
   });
 
-  it("allows OpenAI and OpenRouter", () => {
-    expect(assertSafeBaseURL("https://api.openai.com/v1").hostname).toBe("api.openai.com");
+  it("allows xAI and OpenRouter", () => {
+    expect(assertSafeBaseURL("https://api.x.ai/v1").hostname).toBe("api.x.ai");
     expect(assertSafeBaseURL("https://openrouter.ai/api/v1").hostname).toBe("openrouter.ai");
+  });
+});
+
+describe("coerceUpstream", () => {
+  it("replaces leftover OpenAI defaults with Grok", () => {
+    expect(coerceUpstream("https://api.openai.com/v1", "gpt-4o-mini")).toEqual({
+      baseURL: DEFAULT_BASE,
+      model: DEFAULT_MODEL,
+    });
   });
 });
 

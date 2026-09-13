@@ -27,23 +27,13 @@ Then either:
 
 ## First-run setup (in Safari)
 
-1. Open **Settings**.
-2. Enter Luis’s name and phone number → **Save name & number**.
-3. Paste an OpenAI-compatible API key.
-4. Leave **Base URL** as `https://api.openai.com/v1` and **Model** as `gpt-4o-mini`, or point at another compatible host (for example OpenRouter `https://openrouter.ai/api/v1`) and its model name.
-5. Decide whether to **Remember on this device** (see below).
-6. Tap **Save API settings**, then **Test connection**.
+Grok host and model are built in (`https://api.x.ai/v1`, `grok-4.6`). You do **not** paste an API key on each phone.
 
-### API key storage (read this)
+1. One time on Hostinger: create `api/config.local.php` with your xAI key (see deploy below).
+2. On the phone, open **Settings** and save Luis’s name and phone number.
+3. Optional: **Test connection**.
 
-| Option | Where it lives | Tradeoff |
-|---|---|---|
-| Default (unchecked) | `sessionStorage` | Cleared when you close the Safari tab. Safer on a shared computer. |
-| Remember on this device | `localStorage` | Survives reloads. Anyone with this iPhone/Safari profile can read it. This is **not** as safe as the iOS Keychain. |
-
-The key is never committed to git. Chat calls go through a same-origin `/api/chat` proxy so the browser is not blocked by OpenAI CORS. The proxy forwards your `Authorization` header and does **not** keep the key on the server.
-
-Do not check “remember” on a computer you do not trust.
+The key must never go in git, frontend JS, or the public `dist/` zip. It stays in the private PHP config on the server. Advanced Settings can still override the key in this browser only.
 
 ## Happy paths
 
@@ -61,14 +51,14 @@ On iPhone Safari the link looks like `sms:+1555…&body=…`. Android uses `sms:
 ### Inbox → English
 
 1. **Inbox** — **Paste text**, or **Choose screenshot** / paste an image into the drop zone.
-2. If a vision-capable model (default `gpt-4o-mini`) and an API key are set, the screenshot is sent to that model. Otherwise [Tesseract.js](https://tesseract.projectnaptha.com/) runs in the browser.
+2. Screenshots go to Grok vision when the server key is set; otherwise [Tesseract.js](https://tesseract.projectnaptha.com/) runs in the browser.
 3. Edit the extracted Spanish, then **Translate to English**.
 
 ## Read aloud
 
 After **Translate to Spanish**, tap **Speak Spanish**. The phone speaks the text in the Spanish box (including edits) using the browser [Web Speech API](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis) — no extra API key. It does **not** open Messages or send SMS.
 
-The button becomes **Stop** while speaking, and stays disabled if the Spanish box is empty. Safari on iPhone uses a Spanish voice when one is installed (`es-MX` preferred, then other `es-*`). Turn the ringer/silent switch off and raise volume if you hear nothing.
+The button becomes **Stop** while speaking, and stays disabled if the Spanish box is empty. Speech rate is slowed (~0.8) so Luis can follow in person. Safari on iPhone uses a Spanish voice when one is installed (`es-MX` preferred, then other `es-*`). Turn the ringer/silent switch off and raise volume if you hear nothing.
 
 **Read aloud** is also on the English draft (Compose) and the English result (Inbox).
 
@@ -81,16 +71,19 @@ The button becomes **Stop** while speaking, and stays disabled if the Spanish bo
 | **Recommended** | `https://translate.deliverydave.ai` | New subdomain + folder `public_html/translate` — no collision with the existing site |
 | Fallback | `https://deliverydave.ai/translator/` | Subfolder on the main site if your plan makes subdomains awkward (needs a Vite `base` change; see below) |
 
-OpenAI blocks browser calls (CORS). Hostinger uses `api/chat.php` plus `.htaccess` (both land in `dist/` on build). PHP + curl are on by default. **Do not** store your API key in hPanel — paste it in the app Settings.
+xAI blocks browser calls (CORS). Hostinger uses `api/chat.php` plus `.htaccess` (both land in `dist/` on build). PHP + curl are on by default.
 
-This repo has no Hostinger or DNS passwords.
+**One-time server key:** after you upload `dist`, create `api/config.local.php` on Hostinger (copy `api/config.local.php.example`). Put your xAI key there. Do not commit that file or leave it in the build folder you zip from Windows.
+
+This repo has no Hostinger, DNS, or API-key secrets.
 
 ### Checklist
 
 1. Build `web\dist\` on Windows.
 2. In hPanel, create subdomain `translate` → folder `public_html/translate` → enable SSL.
 3. Upload the **inside** of `dist\` (including hidden `.htaccess`).
-4. Open `https://translate.deliverydave.ai` on the iPhone.
+4. Create `public_html/translate/api/config.local.php` from the example (xAI key). Redeploy `dist` anytime; **leave config.local.php in place** so it is not overwritten if you delete the folder.
+5. Open `https://translate.deliverydave.ai` on the iPhone.
 
 ### 1. Build on Windows
 
@@ -107,8 +100,19 @@ Upload **that folder’s contents**, not `web` and not a nested extra `dist`. Af
 Must include:
 
 - `index.html`, `assets\`, `manifest.webmanifest`, icons
-- `api\chat.php` (CORS proxy)
-- `.htaccess` (rewrites `/api/chat` and passes the Authorization header)
+- `api\chat.php` and `api\config.local.php.example`
+- `.htaccess` (rewrites `/api/chat`; blocks downloading `config.local.php`)
+
+### 1b. Server API key (do this once)
+
+1. In File Manager open `public_html/translate/api`.
+2. Copy `config.local.php.example` to **`config.local.php`** (same folder as `chat.php`).
+3. Edit `config.local.php` and set `'apiKey' => 'xai-…'` to your real xAI key.
+4. Save. Confirm the file is **not** in git.
+
+Safer alternative: put the same `config.local.php` **one level above** `public_html` (account root). `chat.php` looks there too.
+
+Then redeploy later by uploading a fresh `dist` **without** deleting `api/config.local.php`.
 
 ### 2. Subdomain + DNS in Hostinger hPanel
 
@@ -147,7 +151,7 @@ Upload `dist/` into `public_html/translator`. You would then need the built asse
 
 ## Optional: Vercel or Netlify (custom domain on deliverydave.ai)
 
-Use these only if you want a managed Node `/api/chat` proxy instead of Hostinger PHP. The public hostname should still be **`translate.deliverydave.ai`**. Do not put your OpenAI key in host environment variables — paste it in the app Settings.
+Use these only if you want a managed Node `/api/chat` proxy instead of Hostinger PHP. The public hostname should still be **`translate.deliverydave.ai`**. Set **`XAI_API_KEY`** in the host’s environment (never in the frontend). Do not paste the key in Settings for normal use.
 
 This repo cannot log into Vercel, Netlify, or your DNS. You attach the domain yourself.
 
