@@ -1,7 +1,7 @@
 <?php
 /**
- * Same-origin Chat Completions proxy for static Hostinger hosting.
- * Forwards the browser Authorization header. Does not store the API key.
+ * Same-origin Chat Completions proxy for Hostinger.
+ * Uses a browser Authorization header if present, otherwise api/config.local.php.
  */
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
@@ -20,12 +20,22 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $auth = $_SERVER['HTTP_AUTHORIZATION']
     ?? $_SERVER['REDIRECT_HTTP_AUTHORIZATION']
     ?? '';
-if (!preg_match('/^Bearer\s+(\S+)/i', $auth, $matches)) {
+$apiKey = '';
+if (preg_match('/^Bearer\s+(\S+)/i', $auth, $matches)) {
+    $apiKey = $matches[1];
+}
+if ($apiKey === '') {
+    $apiKey = load_server_api_key();
+}
+if ($apiKey === '') {
     http_response_code(401);
-    echo json_encode(['error' => ['message' => 'Missing API key. Add it in Settings.']]);
+    echo json_encode([
+        'error' => [
+            'message' => 'No API key on the server. Upload api/config.local.php next to chat.php (copy from config.local.php.example).',
+        ],
+    ]);
     exit;
 }
-$apiKey = $matches[1];
 
 $raw = file_get_contents('php://input');
 $payload = json_decode($raw ?: '{}', true);
@@ -42,7 +52,17 @@ if (!is_array($messages) || count($messages) === 0) {
     exit;
 }
 
-$base = trim((string)($payload['baseURL'] ?? 'https://api.openai.com/v1'));
+$defaultBase = 'https://api.x.ai/v1';
+$defaultModel = 'grok-4.6';
+$base = trim((string)($payload['baseURL'] ?? $defaultBase));
+$model = trim((string)($payload['model'] ?? $defaultModel));
+if ($base === '' || str_contains(strtolower($base), 'openai.com')) {
+    $base = $defaultBase;
+}
+if ($model === '' || $model === 'gpt-4o-mini' || str_starts_with($model, 'gpt-3')) {
+    $model = $defaultModel;
+}
+
 $base = rtrim($base, '/');
 if (str_ends_with($base, '/chat/completions')) {
     $base = substr($base, 0, -strlen('/chat/completions'));
@@ -77,14 +97,13 @@ if ($blocked || is_private_ipv4($host)) {
 }
 
 if (
-    ($host === 'api.openai.com' || str_ends_with($host, '.openai.com'))
+    ($host === 'api.openai.com' || $host === 'api.x.ai' || str_ends_with($host, '.openai.com') || str_ends_with($host, '.x.ai'))
     && !str_contains($parts['path'] ?? '', 'v1')
 ) {
     $base .= '/v1';
 }
 
 $endpoint = $base . '/chat/completions';
-$model = trim((string)($payload['model'] ?? 'gpt-4o-mini'));
 $temperature = $payload['temperature'] ?? 0.4;
 
 $body = json_encode([
@@ -117,6 +136,28 @@ if ($response === false) {
 
 http_response_code($status ?: 502);
 echo $response;
+
+function load_server_api_key(): string
+{
+    $candidates = [
+        __DIR__ . '/config.local.php',
+        dirname(__DIR__) . '/config.local.php',
+        dirname(__DIR__, 3) . '/config.local.php',
+    ];
+    foreach ($candidates as $file) {
+        if (!is_readable($file)) {
+            continue;
+        }
+        $config = include $file;
+        if (is_array($config) && !empty($config['apiKey']) && is_string($config['apiKey'])) {
+            $key = trim($config['apiKey']);
+            if ($key !== '' && !str_contains($key, 'your-key-here')) {
+                return $key;
+            }
+        }
+    }
+    return '';
+}
 
 function is_private_ipv4(string $host): bool
 {

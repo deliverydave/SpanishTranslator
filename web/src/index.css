@@ -1,29 +1,19 @@
 :root {
-  color-scheme: light dark;
-  --teal: #146b68;
-  --teal-soft: #1f8c87;
-  --sand: #f7edde;
-  --ink: #1e292c;
-  --coral: #dc6e54;
-  --bg: #f3f1ec;
-  --card: #fffdf9;
-  --line: rgba(20, 36, 40, 0.08);
-  --muted: #5d6b6e;
-  --shadow: 0 10px 30px rgba(20, 40, 40, 0.08);
+  color-scheme: light;
+  --primary: #7b2d8e;
+  --primary-dark: #5b1d6e;
+  --primary-soft: #f3e8ff;
+  --sand: #f3e8ff;
+  --ink: #1a1a1a;
+  --coral: #dc2626;
+  --success: #059669;
+  --bg: #ffffff;
+  --card: #f9fafb;
+  --line: #e5e7eb;
+  --muted: #6b7280;
+  --shadow: 0 10px 30px rgba(123, 45, 142, 0.2);
   font-family: "SF Pro Text", "Segoe UI", system-ui, sans-serif;
   line-height: 1.4;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #121716;
-    --card: #1b2221;
-    --ink: #f3efe7;
-    --sand: #2a2620;
-    --line: rgba(255, 255, 255, 0.08);
-    --muted: #b4bfc0;
-    --shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
-  }
 }
 
 * {
@@ -53,7 +43,7 @@ button {
 }
 
 a {
-  color: var(--teal);
+  color: var(--primary);
 }
 
 .app {
@@ -89,7 +79,7 @@ a {
 .ghost {
   border: 0;
   background: transparent;
-  color: var(--teal);
+  color: var(--primary);
   font-weight: 650;
   padding: 8px 4px;
 }
@@ -150,7 +140,7 @@ a {
   font-weight: 700;
   letter-spacing: 0.02em;
   text-transform: uppercase;
-  color: var(--teal);
+  color: var(--primary);
 }
 
 .banner {
@@ -165,7 +155,8 @@ a {
 }
 
 .banner.info {
-  background: color-mix(in srgb, var(--teal) 10%, var(--card));
+  background: var(--primary-soft);
+  color: var(--primary-dark);
 }
 
 .contact-row,
@@ -189,8 +180,8 @@ a {
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: color-mix(in srgb, var(--teal) 16%, var(--card));
-  color: var(--teal);
+  background: color-mix(in srgb, var(--primary) 16%, var(--card));
+  color: var(--primary);
   font-weight: 800;
 }
 
@@ -202,7 +193,7 @@ a {
 
 .bubble.user {
   align-self: flex-end;
-  background: var(--teal);
+  background: var(--primary);
   color: white;
 }
 
@@ -241,7 +232,7 @@ textarea {
   height: 48px;
   border: 0;
   border-radius: 50%;
-  background: var(--teal);
+  background: var(--primary);
   color: white;
   font-size: 1.2rem;
   flex: none;
@@ -268,8 +259,12 @@ textarea {
 }
 
 .primary {
-  background: var(--teal);
+  background: var(--primary);
   color: white;
+}
+
+.primary:active {
+  background: var(--primary-dark);
 }
 
 .primary:disabled,
@@ -279,9 +274,9 @@ textarea {
 }
 
 .secondary {
-  background: color-mix(in srgb, var(--teal) 10%, var(--card));
-  color: var(--teal);
-  border: 1px solid color-mix(in srgb, var(--teal) 22%, transparent);
+  background: color-mix(in srgb, var(--primary) 10%, var(--card));
+  color: var(--primary);
+  border: 1px solid color-mix(in srgb, var(--primary) 22%, transparent);
 }
 
 .danger {
@@ -314,8 +309,8 @@ textarea {
 }
 
 .tab.active {
-  background: color-mix(in srgb, var(--teal) 12%, transparent);
-  color: var(--teal);
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+  color: var(--primary);
   font-weight: 700;
 }
 
@@ -347,11 +342,11 @@ textarea {
 }
 
 .dropzone {
-  border: 1.5px dashed color-mix(in srgb, var(--teal) 45%, var(--line));
+  border: 1.5px dashed color-mix(in srgb, var(--primary) 45%, var(--line));
   border-radius: 16px;
   padding: 18px;
   text-align: center;
-  background: color-mix(in srgb, var(--teal) 6%, var(--card));
+  background: color-mix(in srgb, var(--primary) 6%, var(--card));
 }
 
 .hidden-file {

@@ -1,3 +1,5 @@
+import { DEFAULT_BASE_URL, DEFAULT_MODEL, isLegacyOpenAISettings } from "./defaults";
+
 export type Contact = {
   displayName: string;
   phone: string;
@@ -25,8 +27,8 @@ const REMEMBER_FLAG = "st.rememberKey";
 const COMPOSE_KEY = "st.compose";
 
 export const DEFAULT_API: ApiSettings = {
-  baseURL: "https://api.openai.com/v1",
-  model: "gpt-4o-mini",
+  baseURL: DEFAULT_BASE_URL,
+  model: DEFAULT_MODEL,
 };
 
 export const DEFAULT_CONTACT: Contact = {
@@ -59,7 +61,14 @@ export function saveContact(contact: Contact): void {
 }
 
 export function loadApiSettings(): ApiSettings {
-  return { ...DEFAULT_API, ...readJson<ApiSettings>(localStorage, API_KEY) };
+  const stored = readJson<ApiSettings>(localStorage, API_KEY);
+  if (!stored || isLegacyOpenAISettings(stored.baseURL ?? "", stored.model ?? "")) {
+    return { ...DEFAULT_API };
+  }
+  return {
+    baseURL: stored.baseURL?.trim() || DEFAULT_API.baseURL,
+    model: stored.model?.trim() || DEFAULT_API.model,
+  };
 }
 
 export function saveApiSettings(settings: ApiSettings): void {

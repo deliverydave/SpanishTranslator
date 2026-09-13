@@ -1,0 +1,11 @@
+<?php
+/**
+ * Copy this file to config.local.php on the Hostinger server (same folder as chat.php).
+ * Do NOT commit config.local.php or upload it to git.
+ *
+ * Hostinger File Manager: public_html/translate/api/config.local.php
+ * Safer option: place the same file one level above public_html as config.local.php
+ */
+return [
+    'apiKey' => 'xai-your-key-here',
+];

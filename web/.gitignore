@@ -4,3 +4,5 @@ dist
 .env
 .env.*
 !.env.example
+public/api/config.local.php
+api/config.local.php

@@ -4,8 +4,8 @@
   "description": "Draft English texts for Luis, translate to Spanish, open Messages.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f3f1ec",
-  "theme_color": "#146b68",
+  "background_color": "#FFFFFF",
+  "theme_color": "#7B2D8E",
   "icons": [
     {
       "src": "/icon-192.png",

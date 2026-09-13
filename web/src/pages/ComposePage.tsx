@@ -6,7 +6,6 @@ import { complete } from "../lib/api";
 import { COMPOSE_SYSTEM, EN_TO_ES } from "../lib/prompts";
 import {
   clearCompose,
-  getApiKey,
   loadCompose,
   loadContact,
   saveCompose,
@@ -30,7 +29,6 @@ export function ComposePage() {
   const [showSend, setShowSend] = useState(false);
   const [contact, setContact] = useState<Contact>(loadContact());
   const listRef = useRef<HTMLDivElement>(null);
-  const hasKey = Boolean(getApiKey());
 
   useEffect(() => {
     const snapshot = loadCompose();
@@ -139,7 +137,6 @@ export function ComposePage() {
             <strong>{contact.displayName || "Luis"}</strong>
             <div className="muted">{contact.phone || "Add a number in Settings"}</div>
           </div>
-          {!hasKey ? <span className="pill">API key needed</span> : null}
         </div>
 
         {currentDraft ? (
@@ -185,13 +182,6 @@ export function ComposePage() {
         <div className="composer-dock">
         {error ? <Banner text={error} /> : null}
 
-        {!hasKey ? (
-          <Banner
-            tone="info"
-            text="Add an API key in Settings to polish drafts and translate."
-          />
-        ) : null}
-
         <div className="composer">
           <textarea
             rows={3}
@@ -209,7 +199,7 @@ export function ComposePage() {
             className="send"
             type="button"
             aria-label="Polish draft"
-            disabled={!input.trim() || working || !hasKey}
+            disabled={!input.trim() || working}
             onClick={() => void polish()}
           >
             ↑
