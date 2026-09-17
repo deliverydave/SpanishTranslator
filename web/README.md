@@ -4,7 +4,7 @@ Mobile-first website for bilingual texting with Luis. Open it in **Safari on an 
 
 Draft English → polish in a chat → translate to Spanish → open Messages with Luis’s number and the Spanish body filled in. When Luis replies, paste the text or a screenshot.
 
-The site cannot send SMS by itself or read the Messages inbox. You always tap Send in Messages.
+The phone website cannot send SMS by itself or read the Messages inbox — you always tap Send in Messages. A separate **Twilio webhook** on this same Hostinger folder (`sms/`) can bridge owner ↔ contact with Grok translation. Jobsite/ops only. See **[public/sms/README.md](public/sms/README.md)**.
 
 **Public URL (default):** [https://translate.deliverydave.ai](https://translate.deliverydave.ai) — a subdomain of **deliverydave.ai** so the existing root site is not overwritten. `https://deliverydave.ai/translator/` is the fallback if you prefer a folder on the main site (see below). DNS and SSL are steps you run in your host’s panel; this repo has no domain credentials.
 
@@ -82,8 +82,9 @@ This repo has no Hostinger, DNS, or API-key secrets.
 1. Build `web\dist\` on Windows.
 2. In hPanel, create subdomain `translate` → folder `public_html/translate` → enable SSL.
 3. Upload the **inside** of `dist\` (including hidden `.htaccess`).
-4. Create `public_html/translate/api/config.local.php` from the example (xAI key). Redeploy `dist` anytime; **leave config.local.php in place** so it is not overwritten if you delete the folder.
+4. Create `public_html/translate/api/config.local.php` from the example (xAI key). For the SMS bridge, also create `public_html/translate/sms/config.local.php` (see **[public/sms/README.md](public/sms/README.md)**). Redeploy `dist` anytime; **leave both config.local.php files in place**.
 5. Open `https://translate.deliverydave.ai` on the iPhone.
+6. Twilio webhook (after the number is on the DeliveryDave Messaging Service): `https://translate.deliverydave.ai/sms/twilio-webhook.php`
 
 ### 1. Build on Windows
 
@@ -101,7 +102,8 @@ Must include:
 
 - `index.html`, `assets\`, `manifest.webmanifest`, icons
 - `api\chat.php` and `api\config.local.php.example`
-- `.htaccess` (rewrites `/api/chat`; blocks downloading `config.local.php`)
+- `sms\` (Twilio webhook, `config.local.php.example`, privacy/terms). Copy `sms/config.local.php` on the server; never zip a real one from Windows.
+- `.htaccess` (rewrites `/api/chat` and `/sms/twilio-webhook`; blocks downloading `config.local.php`)
 
 ### 1b. Server API key (do this once)
 
@@ -113,6 +115,17 @@ Must include:
 Safer alternative: put the same `config.local.php` **one level above** `public_html` (account root). `chat.php` looks there too.
 
 Then redeploy later by uploading a fresh `dist` **without** deleting `api/config.local.php`.
+
+### 1c. Twilio bilingual SMS bridge (Hostinger + Twilio)
+
+The translator site still opens Apple Messages on the phone. The optional **jobsite SMS bridge** is a Hostinger PHP webhook at `sms/twilio-webhook.php` (same `dist` upload). It is operations/jobsite only.
+
+- Webhook URL: `https://translate.deliverydave.ai/sms/twilio-webhook.php`
+- Copy `sms/config.local.php.example` → `sms/config.local.php` on the server (Twilio SID/token, owner/contact phones, DeliveryDave Messaging Service SID). Never commit it.
+- Move **+14704704880** off **ACap Catalyst Alert** onto the **DeliveryDave** Messaging Service, then point inbound POST at that webhook.
+- Local checks: `php sms-smoke.php` (or `npm run sms-smoke`).
+
+Full steps: **[public/sms/README.md](public/sms/README.md)**.
 
 ### 2. Subdomain + DNS in Hostinger hPanel
 

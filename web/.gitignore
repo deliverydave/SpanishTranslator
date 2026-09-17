@@ -6,3 +6,6 @@ dist
 !.env.example
 public/api/config.local.php
 api/config.local.php
+public/sms/config.local.php
+public/sms/data/*.json
+public/sms/data/*.log
