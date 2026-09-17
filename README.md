@@ -2,7 +2,7 @@
 
 Bilingual texting helper for Luis. Draft in English, polish the wording, translate to natural Spanish, then open Apple Messages with Luis’s number and the Spanish text filled in. When Luis replies, paste the Spanish or a screenshot; the app shows clear English.
 
-The iPhone site still cannot send SMS by itself: you tap Send in Messages. Separately, **Hostinger + Twilio** can run a bilingual jobsite SMS bridge (`web/public/sms/`) so Luis and Dave text a Twilio number and each receives a translation. That path is ops/jobsite only — never stocks, tickers, catalysts, or investment alerts. Deploy: **[web/public/sms/README.md](web/public/sms/README.md)**.
+The iPhone site still cannot send SMS by itself: you tap Send in Messages. Separately, **Hostinger + Twilio** can run a bilingual jobsite SMS bridge (`web/public/sms/`) so Luis and Dave text a Twilio number and each receives a translation. Enroll phones on https://deliverydave.ai/sms-consent/ (do not put Twilio secrets on that form). Deploy: **[web/public/sms/README.md](web/public/sms/README.md)**.
 
 ## Current path: phone website (no Mac)
 

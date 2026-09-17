@@ -103,7 +103,7 @@ Must include:
 - `index.html`, `assets\`, `manifest.webmanifest`, icons
 - `api\chat.php` and `api\config.local.php.example`
 - `sms\` (Twilio webhook, `config.local.php.example`, privacy/terms). Copy `sms/config.local.php` on the server; never zip a real one from Windows.
-- `.htaccess` (rewrites `/api/chat` and `/sms/twilio-webhook`; blocks downloading `config.local.php`)
+- `.htaccess` (rewrites `/api/chat`, `/sms/twilio-webhook`, and `/sms/enroll`; blocks downloading `config.local.php`)
 
 ### 1b. Server API key (do this once)
 
@@ -121,7 +121,8 @@ Then redeploy later by uploading a fresh `dist` **without** deleting `api/config
 The translator site still opens Apple Messages on the phone. The optional **jobsite SMS bridge** is a Hostinger PHP webhook at `sms/twilio-webhook.php` (same `dist` upload). It is operations/jobsite only.
 
 - Webhook URL: `https://translate.deliverydave.ai/sms/twilio-webhook.php`
-- Copy `sms/config.local.php.example` → `sms/config.local.php` on the server (Twilio SID/token, owner/contact phones, DeliveryDave Messaging Service SID). Never commit it.
+- Enroll URL: `https://translate.deliverydave.ai/sms/enroll.php` (consent form at https://deliverydave.ai/sms-consent/ — replace Hostinger `public_html/sms-consent/index.html` from `hostinger-pages/sms-consent/`)
+- Copy `sms/config.local.php.example` → `sms/config.local.php` on the server (Twilio Account SID / Auth Token / **Messaging Service SID `MG…`** — not Campaign `CM…` — and xAI key). Owner/contact phones are enrolled on the consent page into `sms/data/pair.json`. Never commit `config.local.php`.
 - Move **+14704704880** off **ACap Catalyst Alert** onto the **DeliveryDave** Messaging Service, then point inbound POST at that webhook.
 - Local checks: `php sms-smoke.php` (or `npm run sms-smoke`).
 

@@ -36,3 +36,15 @@ function sms_same_number(string $a, string $b): bool
     $right = sms_e164($b);
     return $left !== '' && $left === $right;
 }
+
+/**
+ * E.164-ish: + then 8–15 digits, first digit 1–9 (ITU max 15).
+ */
+function sms_e164_valid(string $phone): bool
+{
+    $e164 = sms_e164($phone);
+    if ($e164 === '') {
+        return false;
+    }
+    return (bool)preg_match('/^\+[1-9]\d{7,14}$/', $e164);
+}

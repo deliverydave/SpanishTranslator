@@ -11,6 +11,7 @@ require_once __DIR__ . '/optout.php';
 require_once __DIR__ . '/twilio.php';
 require_once __DIR__ . '/translate.php';
 require_once __DIR__ . '/bridge.php';
+require_once __DIR__ . '/enroll.php';
 
 function sms_finish_http_response(): void
 {
