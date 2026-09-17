@@ -4,6 +4,7 @@
   RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
   RewriteRule ^api/chat$ api/chat.php [L]
   RewriteRule ^sms/twilio-webhook$ sms/twilio-webhook.php [L]
+  RewriteRule ^sms/enroll$ sms/enroll.php [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule ^ index.html [L]

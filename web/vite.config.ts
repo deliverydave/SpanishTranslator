@@ -79,6 +79,8 @@ function stripLocalSecrets(): Plugin {
       await unlink(resolve("dist/api/config.local.php")).catch(() => undefined);
       await unlink(resolve("dist/sms/config.local.php")).catch(() => undefined);
       await unlink(resolve("dist/sms/data/optouts.json")).catch(() => undefined);
+      await unlink(resolve("dist/sms/data/pair.json")).catch(() => undefined);
+      await unlink(resolve("dist/sms/data/enroll-rate.json")).catch(() => undefined);
     },
   };
 }

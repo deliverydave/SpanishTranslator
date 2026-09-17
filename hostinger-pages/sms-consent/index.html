@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SMS Consent — DeliveryDave</title>
+  <meta name="description" content="Optional opt-in for DeliveryDave bilingual SMS translation messaging." />
+  <!--
+    Live URL: https://deliverydave.ai/sms-consent/
+    Deploy: replace Hostinger public_html/sms-consent/index.html with this file
+    (hostinger-pages/sms-consent/index.html). The same copy is at
+    web/public/sms/consent/index.html for the translator dist.
+    Form POSTs to https://translate.deliverydave.ai/sms/enroll.php
+    Twilio secrets are NOT collected here.
+  -->
+  <style>
+    :root {
+      --primary: #7B2D8E;
+      --primary-dark: #5B1D6E;
+      --primary-light: #F3E8FF;
+      --text: #1A1A1A;
+      --muted: #6B7280;
+      --bg: #FFFFFF;
+      --surface: #F9FAFB;
+      --border: #E5E7EB;
+      --success: #059669;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.55;
+    }
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff;
+      padding: 28px 20px;
+    }
+    header a { color: #fff; opacity: 0.9; text-decoration: none; font-size: 14px; }
+    main { max-width: 720px; margin: 0 auto; padding: 28px 20px 64px; }
+    h1 { margin: 8px 0 0; font-size: 1.75rem; }
+    h2 { margin-top: 1.5rem; font-size: 1.1rem; color: var(--primary-dark); }
+    .muted { color: var(--muted); font-size: 0.95rem; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin: 16px 0;
+    }
+    .callout {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin: 16px 0;
+    }
+    .person {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin: 14px 0;
+      background: #fff;
+    }
+    .person h3 {
+      margin: 0 0 10px;
+      font-size: 1rem;
+      color: var(--primary-dark);
+    }
+    .field { display: flex; flex-direction: column; gap: 6px; margin: 12px 0; }
+    .field span { font-size: 0.85rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.03em; }
+    .field input, .field select {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 1rem;
+      background: #fff;
+    }
+    .row2 {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 560px) {
+      .row2 { grid-template-columns: 1fr; }
+    }
+    label.consent {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      background: var(--primary-light);
+      border: 1px solid #e9d5ff;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin: 18px 0;
+      cursor: pointer;
+    }
+    label.consent input[type="checkbox"] { margin-top: 4px; width: 18px; height: 18px; flex-shrink: 0; }
+    button.primary {
+      background: var(--primary);
+      color: #fff;
+      border: 0;
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-size: 1rem;
+      font-weight: 600;
+      width: 100%;
+      cursor: pointer;
+    }
+    button.primary:disabled { opacity: 0.45; cursor: not-allowed; }
+    button.secondary {
+      background: #fff;
+      color: var(--primary-dark);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-size: 1rem;
+      font-weight: 600;
+      width: 100%;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .ok {
+      display: none;
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      color: var(--success);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-top: 16px;
+    }
+    .err {
+      display: none;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #b91c1c;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-top: 12px;
+    }
+    nav.footer-links { margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border); }
+    nav.footer-links a { color: var(--primary); margin-right: 16px; }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="https://deliverydave.ai">← DeliveryDave</a>
+    <h1>Optional SMS enrollment</h1>
+    <p style="margin:8px 0 0;opacity:.9">Bilingual messaging add-on — not required to use DeliveryDave</p>
+  </header>
+  <main>
+    <div class="callout">
+      <strong>SMS is optional.</strong>
+      Consent to text messages is <em>not</em> required to purchase or use DeliveryDave.
+      You can use DeliveryDave (including the web translator at
+      <a href="https://translate.deliverydave.ai">translate.deliverydave.ai</a>)
+      without enrolling in SMS. This page is only if you want the optional bilingual SMS bridge.
+    </div>
+
+    <p>
+      <strong>DeliveryDave</strong> is a contractor operations platform. Separately, DeliveryDave offers an
+      <strong>optional</strong> bilingual SMS translation feature so the business may coordinate with
+      Spanish-speaking crew, vendors, or customers by text.
+    </p>
+
+    <div class="card">
+      <h2 style="margin-top:0">If you opt in to SMS</h2>
+      <ul>
+        <li>Operational messages only (scheduling, materials, job updates) — not marketing</li>
+        <li>Each number receives texts in the language selected below (English or Spanish)</li>
+        <li>Message frequency varies. Message and data rates may apply.</li>
+        <li>Reply <strong>STOP</strong> to cancel. Reply <strong>HELP</strong> for help.</li>
+      </ul>
+    </div>
+
+    <div class="card" id="sms-opt-in-form">
+      <h2 style="margin-top:0">Optional: enroll numbers for DeliveryDave SMS</h2>
+      <p class="muted">Fill this only if you want SMS. Leaving this page or declining the checkbox does not block you from using DeliveryDave.</p>
+
+      <div class="person">
+        <h3>1. Account owner</h3>
+        <label class="field">
+          <span>Display name (optional)</span>
+          <input id="ownerName" name="owner_name" type="text" placeholder="Dave" value="Dave" autocomplete="name" />
+        </label>
+        <div class="row2">
+          <label class="field">
+            <span>Mobile number</span>
+            <input id="ownerPhone" name="owner_phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+1 555 555 0100" />
+          </label>
+          <label class="field">
+            <span>Receives messages in</span>
+            <select id="ownerLang" name="owner_language">
+              <option value="en" selected>English</option>
+              <option value="es">Spanish</option>
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <div class="person">
+        <h3>2. Designated contact (e.g. crew / vendor)</h3>
+        <label class="field">
+          <span>Display name (optional)</span>
+          <input id="contactName" name="contact_name" type="text" placeholder="Luis" />
+        </label>
+        <div class="row2">
+          <label class="field">
+            <span>Mobile number</span>
+            <input id="contactPhone" name="contact_phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+1 555 555 0199" />
+          </label>
+          <label class="field">
+            <span>Receives messages in</span>
+            <select id="contactLang" name="contact_language">
+              <option value="es" selected>Spanish</option>
+              <option value="en">English</option>
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <label class="consent" for="agree">
+        <input id="agree" name="sms_consent" type="checkbox" />
+        <span>
+          <strong>(Optional)</strong> I want to opt in to recurring automated SMS from <strong>DeliveryDave</strong>
+          at the mobile numbers entered above for bilingual jobsite / operations coordination.
+          This SMS program is voluntary and is <strong>not a condition of purchasing or using DeliveryDave</strong>.
+          Each number will receive messages in the language selected for that number (English or Spanish).
+          Message frequency varies. Message and data rates may apply. Reply <strong>STOP</strong> to unsubscribe.
+          Reply <strong>HELP</strong> for help.
+          Terms: <a href="https://deliverydave.ai/sms-terms/" target="_blank" rel="noopener">deliverydave.ai/sms-terms</a>.
+          Privacy: <a href="https://deliverydave.ai/sms-privacy/" target="_blank" rel="noopener">deliverydave.ai/sms-privacy</a>.
+          I confirm I am authorized to enroll these numbers and the contact has agreed to participate.
+        </span>
+      </label>
+
+      <button class="primary" id="confirm" type="button" disabled>Opt in to SMS (optional)</button>
+      <button class="secondary" id="decline" type="button">No thanks — continue without SMS</button>
+      <div class="err" id="err"></div>
+      <div class="ok" id="ok"></div>
+    </div>
+
+    <nav class="footer-links">
+      <a href="https://deliverydave.ai/sms-privacy/">SMS Privacy</a>
+      <a href="https://deliverydave.ai/sms-terms/">SMS Terms</a>
+      <a href="https://translate.deliverydave.ai">Web translator (no SMS required)</a>
+    </nav>
+  </main>
+  <script>
+    const box = document.getElementById('agree');
+    const btn = document.getElementById('confirm');
+    const decline = document.getElementById('decline');
+    const ok = document.getElementById('ok');
+    const err = document.getElementById('err');
+    const owner = document.getElementById('ownerPhone');
+    const contact = document.getElementById('contactPhone');
+    const ownerLang = document.getElementById('ownerLang');
+    const contactLang = document.getElementById('contactLang');
+    const ownerName = document.getElementById('ownerName');
+    const contactName = document.getElementById('contactName');
+
+    const langLabel = (v) => (v === 'es' ? 'Spanish' : 'English');
+
+    function enrollUrl() {
+      const host = location.hostname;
+      if (host === 'deliverydave.ai' || host === 'www.deliverydave.ai') {
+        return 'https://translate.deliverydave.ai/sms/enroll.php';
+      }
+      return new URL('/sms/enroll.php', location.origin).href;
+    }
+
+    function showError(message) {
+      err.textContent = message;
+      err.style.display = 'block';
+      ok.style.display = 'none';
+    }
+
+    function lockForm() {
+      btn.textContent = 'SMS opt-in saved';
+      btn.disabled = true;
+      decline.disabled = true;
+      [owner, contact, ownerLang, contactLang, ownerName, contactName].forEach((el) => {
+        el.readOnly = true;
+        el.disabled = true;
+      });
+      box.disabled = true;
+    }
+
+    function sync() {
+      btn.disabled = !box.checked;
+    }
+    box.addEventListener('change', sync);
+
+    decline.addEventListener('click', () => {
+      err.style.display = 'none';
+      ok.style.display = 'block';
+      ok.innerHTML =
+        'No SMS enrollment. You can keep using DeliveryDave without text messages, including the web translator at <a href="https://translate.deliverydave.ai">translate.deliverydave.ai</a>.';
+      box.checked = false;
+      btn.disabled = true;
+    });
+
+    btn.addEventListener('click', async () => {
+      err.style.display = 'none';
+      ok.style.display = 'none';
+      if (!box.checked) return;
+      if (!owner.value.trim() || !contact.value.trim()) {
+        showError('To opt in to SMS, enter both mobile numbers above (or choose “No thanks” to skip SMS).');
+        return;
+      }
+
+      const previousLabel = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'Saving…';
+
+      try {
+        const res = await fetch(enrollUrl(), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            owner_name: ownerName.value.trim(),
+            owner_phone: owner.value.trim(),
+            owner_language: ownerLang.value,
+            contact_name: contactName.value.trim(),
+            contact_phone: contact.value.trim(),
+            contact_language: contactLang.value,
+            sms_consent: true,
+          }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || !data.ok) {
+          throw new Error(data.error || 'Enrollment failed. Try again in a moment.');
+        }
+
+        const ownerLabel = (data.owner && data.owner.name) || ownerName.value.trim() || 'Dave';
+        const name = (data.contact && data.contact.name) || contactName.value.trim() || 'Designated contact';
+        const ownerPhoneSaved = (data.owner && data.owner.phone) || owner.value.trim();
+        const contactPhoneSaved = (data.contact && data.contact.phone) || contact.value.trim();
+        const ownerLangSaved = (data.owner && data.owner.lang) || ownerLang.value;
+        const contactLangSaved = (data.contact && data.contact.lang) || contactLang.value;
+        ok.innerHTML =
+          'Optional SMS consent recorded. The live jobsite pair is updated.<br><br>' +
+          '<strong>' + ownerLabel + ' (owner):</strong> ' + ownerPhoneSaved + ' → receives <strong>' + langLabel(ownerLangSaved) + '</strong><br>' +
+          '<strong>' + name + ':</strong> ' + contactPhoneSaved + ' → receives <strong>' + langLabel(contactLangSaved) + '</strong><br><br>' +
+          'Keep a screenshot for your records. SMS was not required to use DeliveryDave.';
+        ok.style.display = 'block';
+        lockForm();
+      } catch (e) {
+        showError(e && e.message ? e.message : 'Could not reach the enrollment server. Try again.');
+        btn.textContent = previousLabel;
+        btn.disabled = !box.checked;
+      }
+    });
+  </script>
+</body>
+</html>
