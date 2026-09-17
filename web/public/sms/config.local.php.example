@@ -1,0 +1,33 @@
+<?php
+/**
+ * Copy this file to config.local.php on the Hostinger server (same folder as twilio-webhook.php).
+ * Do NOT commit config.local.php or upload it to git.
+ *
+ * Hostinger File Manager: public_html/translate/sms/config.local.php
+ *
+ * The xAI key can live here, or you can leave apiKey empty and reuse
+ * public_html/translate/api/config.local.php (the translator site key).
+ */
+return [
+    'accountSid' => 'ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+    'authToken' => 'your-auth-token-here',
+    // Optional. Prefer the DeliveryDave Messaging Service SID so +14704704880
+    // sends from that service (not the old ACap Catalyst Alert service).
+    'messagingServiceSid' => '',
+    'twilioNumber' => '+14704704880',
+    'webhookUrl' => 'https://translate.deliverydave.ai/sms/twilio-webhook.php',
+    'owner' => [
+        'name' => 'Dave',
+        'phone' => '+15555550100',
+        'lang' => 'en',
+    ],
+    'contact' => [
+        'name' => 'Luis',
+        'phone' => '+15555550101',
+        'lang' => 'es',
+    ],
+    'apiKey' => 'xai-your-key-here',
+    'helpEmail' => 'contact@deliverydave.ai',
+    'privacyUrl' => 'https://translate.deliverydave.ai/sms/privacy.html',
+    'termsUrl' => 'https://translate.deliverydave.ai/sms/terms.html',
+];

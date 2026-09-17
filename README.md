@@ -2,7 +2,7 @@
 
 Bilingual texting helper for Luis. Draft in English, polish the wording, translate to natural Spanish, then open Apple Messages with Luis’s number and the Spanish text filled in. When Luis replies, paste the Spanish or a screenshot; the app shows clear English.
 
-Nothing here can send SMS by itself or read the Messages inbox. You always tap Send in Messages.
+The iPhone site still cannot send SMS by itself: you tap Send in Messages. Separately, **Hostinger + Twilio** can run a bilingual jobsite SMS bridge (`web/public/sms/`) so Luis and Dave text a Twilio number and each receives a translation. That path is ops/jobsite only — never stocks, tickers, catalysts, or investment alerts. Deploy: **[web/public/sms/README.md](web/public/sms/README.md)**.
 
 ## Current path: phone website (no Mac)
 
@@ -48,6 +48,7 @@ web/                         ← use this (Windows + iPhone Safari)
   src/                       Compose, Inbox, Settings
   api/chat.ts                Vite / Vercel CORS proxy
   public/api/chat.php        Hostinger CORS proxy (static + PHP)
+  public/sms/                Twilio bilingual jobsite SMS bridge (Hostinger PHP)
 SpanishTranslator.xcodeproj  ← Plan B (Mac / Xcode)
 SpanishTranslator/           SwiftUI sources
 ```

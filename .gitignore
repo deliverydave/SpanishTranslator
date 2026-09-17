@@ -16,6 +16,8 @@ dist/
 .env
 .env.*
 **/config.local.php
+web/public/sms/data/*.json
+web/public/sms/data/*.log
 *.playground
 timeline.xctimeline
 playground.xcworkspace

@@ -1,0 +1,10 @@
+<IfModule mod_authz_core.c>
+  <FilesMatch "^(.*\.json|.*\.log)$">
+    Require all denied
+  </FilesMatch>
+</IfModule>
+<IfModule !mod_authz_core.c>
+  <FilesMatch "^(.*\.json|.*\.log)$">
+    Deny from all
+  </FilesMatch>
+</IfModule>

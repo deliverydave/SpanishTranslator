@@ -77,6 +77,8 @@ function stripLocalSecrets(): Plugin {
     name: "strip-local-secrets",
     async closeBundle() {
       await unlink(resolve("dist/api/config.local.php")).catch(() => undefined);
+      await unlink(resolve("dist/sms/config.local.php")).catch(() => undefined);
+      await unlink(resolve("dist/sms/data/optouts.json")).catch(() => undefined);
     },
   };
 }
