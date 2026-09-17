@@ -105,7 +105,7 @@ function sms_load_config(): array
     $config = [
         'accountSid' => $accountSid,
         'authToken' => $authToken,
-        'messagingServiceSid' => trim((string)($merged['messagingServiceSid'] ?? '')),
+        'messagingServiceSid' => sms_messaging_service_sid($merged['messagingServiceSid'] ?? ''),
         'twilioNumber' => $twilioNumber,
         'owner' => $owner,
         'contact' => $contact,
@@ -128,6 +128,18 @@ function sms_load_config(): array
             : true,
     ];
     return sms_apply_pair_override($config);
+}
+
+/**
+ * Messaging Service SIDs start with MG. Campaign SIDs (CM…) are ignored.
+ */
+function sms_messaging_service_sid(mixed $value): string
+{
+    $sid = trim((string)$value);
+    if ($sid === '' || str_starts_with($sid, 'MG')) {
+        return $sid;
+    }
+    return '';
 }
 
 function sms_pair_path(array $config): string

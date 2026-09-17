@@ -14,20 +14,23 @@ return [
     // Optional. Messaging Service SID starts with MG — not the A2P Campaign
     // SID (CM…). Prefer the DeliveryDave Messaging Service so +14704704880
     // sends from that service (not the old ACap Catalyst Alert service).
+    // Paste this DeliveryDave MG SID into the value on the server only
+    // (never commit config.local.php):
+    // MG6945447cb0260b6bdda2ee1d758d6e9b
     'messagingServiceSid' => '',
     'twilioNumber' => '+14704704880',
     'webhookUrl' => 'https://translate.deliverydave.ai/sms/twilio-webhook.php',
-    // Defaults only. Live owner/contact name, phone, and language come from
+    // Name/lang defaults only. Live owner/contact phones come from
     // data/pair.json after someone enrolls at deliverydave.ai/sms-consent/.
     // Twilio/xAI secrets stay in this file — they are not on the web form.
     'owner' => [
         'name' => 'Dave',
-        'phone' => '+15555550100',
+        'phone' => '',
         'lang' => 'en',
     ],
     'contact' => [
         'name' => 'Luis',
-        'phone' => '+15555550101',
+        'phone' => '',
         'lang' => 'es',
     ],
     'apiKey' => 'xai-your-key-here',

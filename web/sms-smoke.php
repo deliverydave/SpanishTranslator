@@ -381,8 +381,11 @@ $oldEnv = getenv('DELIVERYDAVE_SMS_CONFIG');
 $loadDir = sys_get_temp_dir() . '/dd-sms-load-' . bin2hex(random_bytes(4));
 mkdir($loadDir, 0700, true);
 $loadCfg = test_config();
+$loadCfg['owner'] = ['name' => 'Dave', 'phone' => '', 'lang' => 'en'];
+$loadCfg['contact'] = ['name' => 'Luis', 'phone' => '', 'lang' => 'es'];
 $loadCfg['pairFile'] = $loadDir . '/pair.json';
 $loadCfg['optoutFile'] = $loadDir . '/optouts.json';
+$loadCfg['messagingServiceSid'] = 'CMbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb';
 $loadFile = $loadDir . '/config.local.php';
 file_put_contents($loadFile, "<?php\nreturn " . var_export($loadCfg, true) . ";\n");
 file_put_contents($loadCfg['pairFile'], json_encode([
@@ -398,7 +401,11 @@ if ($oldEnv === false || $oldEnv === '') {
 }
 expect($loaded['owner']['phone'] === '+15555550700', 'sms_load_config applies pair.json');
 expect($loaded['contact']['name'] === 'Sam', 'sms_load_config pair name');
+expect($loaded['owner']['phone'] !== '', 'pair.json supplies phones when config.local.php phones are empty');
+expect($loaded['messagingServiceSid'] === '', 'Campaign CM SID is not used as messagingServiceSid');
 expect($loaded['authToken'] === 'test-auth-token-not-real', 'Twilio token still comes from config.local.php');
+expect(sms_messaging_service_sid('MGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa') === 'MGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'MG SID is kept');
+expect(sms_messaging_service_sid('') === '', 'empty MG SID stays empty');
 
 echo "\nConsent page copy\n";
 $consentPath = __DIR__ . '/public/sms/consent/index.html';
@@ -421,13 +428,20 @@ $example = include $examplePath;
 expect(is_array($example), 'example config loads');
 expect(($example['twilioNumber'] ?? '') === '+14704704880', 'default Twilio number');
 expect(isset($example['owner']['name'], $example['contact']['phone'], $example['apiKey']), 'owner/contact/apiKey present');
-expect(($example['messagingServiceSid'] ?? 'missing') === '', 'messagingServiceSid optional empty');
+expect(($example['owner']['phone'] ?? 'x') === '' && ($example['contact']['phone'] ?? 'x') === '', 'example owner/contact phones are empty (pair.json supplies live numbers)');
+expect(($example['messagingServiceSid'] ?? 'missing') === '', 'messagingServiceSid is not assigned in git');
+expect(($example['accountSid'] ?? '') === 'ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'accountSid is a placeholder');
+expect(($example['authToken'] ?? '') === 'your-auth-token-here', 'authToken is a placeholder');
 $rawExample = file_get_contents($examplePath);
 expect(
-    !preg_match('/sk-|xai-[a-zA-Z0-9]{10,}|[0-9a-f]{32}/', (string)$rawExample)
-    || str_contains((string)$rawExample, 'your-auth-token-here'),
-    'example file has placeholders, not live secrets',
+    (bool)preg_match('/^\s*\/\/\s*MG[0-9a-f]{32}\s*$/mi', (string)$rawExample),
+    'example comments include an MG SID to paste on the server',
 );
+expect(
+    !preg_match("/'messagingServiceSid'\s*=>\s*'MG/i", (string)$rawExample),
+    'MG SID is not the PHP assigned value',
+);
+expect(str_contains((string)$rawExample, 'your-auth-token-here'), 'example file has an auth token placeholder');
 
 $errors = sms_config_errors(array_merge($cfg, ['apiKey' => '', 'authToken' => 'your-auth-token-here']));
 expect(in_array('apiKey', $errors, true) && in_array('authToken', $errors, true), 'incomplete config is rejected');

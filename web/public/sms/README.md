@@ -79,9 +79,9 @@ Then **once** on the server, copy the example config:
 1. File Manager → `public_html/translate/sms`
 2. Copy `config.local.php.example` → **`config.local.php`**
 3. Fill in real Twilio `accountSid` / `authToken`, and the xAI key (or leave `apiKey` empty and reuse `public_html/translate/api/config.local.php`)
-4. Set `messagingServiceSid` to the **DeliveryDave Messaging Service SID** (`MG…`). Do **not** paste the A2P Campaign SID (`CM…`) here.
+4. Set `messagingServiceSid` on the **server** `config.local.php` to the DeliveryDave Messaging Service SID (`MG…`). `config.local.php.example` comments that SID so you can paste it; do not assign it in git. Do **not** paste the A2P Campaign SID (`CM…`) here.
 5. Leave `webhookUrl` as `https://translate.deliverydave.ai/sms/twilio-webhook.php` so signature checks match what Twilio signed
-6. Owner + contact **phones can stay as placeholders**. Enroll them on https://deliverydave.ai/sms-consent/ so `data/pair.json` overrides those defaults.
+6. Leave owner + contact **phones empty** in `config.local.php`. Enroll them on https://deliverydave.ai/sms-consent/ so `data/pair.json` is the live pair.
 7. Do **not** commit `config.local.php`. Redeploy `dist` without deleting this file.
 
 ### Consent page on the main site (required for enrollment)
@@ -110,7 +110,7 @@ In [Twilio Console](https://www.twilio.com/console):
    - HTTP POST
 6. On the **phone number** itself, set **A MESSAGE COMES IN** to the same URL (or “Messaging Service”) so inbound cannot stay on the old ACap webhook.
 7. **Opt-Out Management:** turn **Advanced Opt-Out off** so this app can send bilingual STOP/HELP/START replies. If you leave Advanced Opt-Out on, Twilio may send its own English reply first; this app still records STOP and will not forward.
-8. Copy the Messaging Service SID (`MG…`) into `config.local.php` → `messagingServiceSid`. The Campaign SID (`CM…`) is not this field.
+8. Copy the Messaging Service SID (`MG…`) from the commented example into server `config.local.php` → `messagingServiceSid`. The Campaign SID (`CM…`) is not this field.
 
 Save. Send a test SMS to +14704704880 from the contact phone and watch **Monitor → Logs → Errors** plus Hostinger error logs.
 
@@ -140,10 +140,10 @@ After Hostinger + Twilio are configured, live checks:
 |---|---|---|
 | `accountSid` | yes | `AC…` |
 | `authToken` | yes | used for REST send **and** `X-Twilio-Signature` |
-| `messagingServiceSid` | no | `MG…` DeliveryDave service; recommended |
+| `messagingServiceSid` | no | `MG…` DeliveryDave service; recommended. Comment in `config.local.php.example`; assign only in server `config.local.php`. Not Campaign `CM…`. |
 | `twilioNumber` | yes | default `+14704704880` |
-| `owner.name/phone/lang` | default | overridden by `data/pair.json` after consent enroll |
-| `contact.name/phone/lang` | default | overridden by `data/pair.json` after consent enroll |
+| `owner.name/phone/lang` | default | live phones from `data/pair.json` after consent enroll |
+| `contact.name/phone/lang` | default | live phones from `data/pair.json` after consent enroll |
 | `apiKey` | yes* | xAI key; *or* the existing `api/config.local.php` key |
 | `webhookUrl` | recommended | exact public webhook URL |
 | `helpEmail` | no | default `contact@deliverydave.ai` |
