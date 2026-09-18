@@ -109,10 +109,12 @@ $enFwd = sms_attribution('Luis', 'I will be on site at 7.', 'es', 'en');
 $esFwd = sms_attribution('Dave', 'Estaré en la obra a las 7.', 'en', 'es');
 $enDisclosure = 'Msg & data rates may apply. Reply STOP to opt out, HELP for help.';
 $esDisclosure = 'Pueden aplicar tarifas de mensajes y datos. Responde STOP para cancelar, HELP para ayuda.';
-$enExpected = "Luis: \"I will be on site at 7.\"\n\n" . $enDisclosure;
-$esExpected = "Dave: \"Estaré en la obra a las 7.\"\n\n" . $esDisclosure;
-expect($enFwd === $enExpected, 'EN forward is Name: "quote" + blank line + disclosure');
-expect($esFwd === $esExpected, 'ES forward is Name: "quote" + blank line + disclosure');
+$enExpected = "Luis: I will be on site at 7.\n\n" . $enDisclosure;
+$esExpected = "Dave: Estaré en la obra a las 7.\n\n" . $esDisclosure;
+expect($enFwd === $enExpected, 'EN forward is Name: body + blank line + disclosure');
+expect($esFwd === $esExpected, 'ES forward is Name: body + blank line + disclosure');
+expect(!str_contains($enFwd, '"I will be on site at 7."'), 'EN body is not wrapped in double quotes');
+expect(!str_contains($esFwd, '"Estaré en la obra a las 7."'), 'ES body is not wrapped in double quotes');
 expect(!str_contains($enFwd, 'Original Spanish received'), 'EN has no middle attribution line');
 expect(!str_contains($esFwd, 'recibido y traducido'), 'ES has no middle attribution line');
 expect(sms_disclosure('en') === $enDisclosure, 'EN disclosure is rates/STOP/HELP only');
@@ -173,8 +175,8 @@ expect(str_contains($result['sends'][0]['body'] ?? '', 'Luis:'), 'owner sees con
 expect(str_contains($result['sends'][0]['body'] ?? '', 'EN('), 'translated into owner English');
 $ownerFwd = (string)($result['sends'][0]['body'] ?? '');
 expect(
-    preg_match('/^Luis: "EN\(.+\)"\n\nMsg & data rates may apply\./s', $ownerFwd) === 1,
-    'EN forwarded body is Name: "quote" then blank line then disclaimers',
+    preg_match('/^Luis: EN\(.+\)\n\nMsg & data rates may apply\./s', $ownerFwd) === 1,
+    'EN forwarded body is Name: body then blank line then disclaimers',
 );
 expect(!str_contains($ownerFwd, 'Original Spanish received'), 'EN forwarded body has no middle attribution');
 expect(!str_contains($ownerFwd, 'DD Text.'), 'EN forwarded footer has no DD Text. brand');
@@ -192,8 +194,8 @@ expect(str_contains($result['sends'][0]['body'] ?? '', 'Dave:'), 'contact sees o
 expect(str_contains($result['sends'][0]['body'] ?? '', 'ES('), 'translated into contact Spanish');
 $contactFwd = (string)($result['sends'][0]['body'] ?? '');
 expect(
-    preg_match('/^Dave: "ES\(.+\)"\n\nPueden aplicar tarifas/s', $contactFwd) === 1,
-    'ES forwarded body is Name: "quote" then blank line then Spanish disclaimers',
+    preg_match('/^Dave: ES\(.+\)\n\nPueden aplicar tarifas/s', $contactFwd) === 1,
+    'ES forwarded body is Name: body then blank line then Spanish disclaimers',
 );
 expect(!str_contains($contactFwd, 'recibido y traducido'), 'ES forwarded body has no middle attribution');
 expect(!str_contains($contactFwd, 'DD Text.'), 'ES forwarded footer has no DD Text. brand');

@@ -43,7 +43,7 @@ function sms_attribution(string $senderName, string $translated, string $sourceL
 {
     $safe = str_replace(['"', '“', '”'], "'", trim($translated));
     $receive = sms_lang($targetLang);
-    $line = sprintf('%s: "%s"', $senderName, $safe);
+    $line = sprintf('%s: %s', $senderName, $safe);
     return $line . "\n\n" . sms_disclosure($receive);
 }
 
