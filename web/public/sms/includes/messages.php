@@ -34,8 +34,8 @@ function sms_disclosure(string $lang): string
 {
     return sms_in_lang(
         $lang,
-        'DeliveryDave jobsite texts. Msg & data rates may apply. Reply STOP to opt out, HELP for help.',
-        'Textos de obra de DeliveryDave. Pueden aplicar tarifas de mensajes y datos. Responde STOP para cancelar, HELP para ayuda.',
+        'DD Text. Msg & data rates may apply. Reply STOP to opt out, HELP for help.',
+        'DD Text. Pueden aplicar tarifas de mensajes y datos. Responde STOP para cancelar, HELP para ayuda.',
     );
 }
 
@@ -79,8 +79,8 @@ function sms_help_message(array $config, string $lang): string
     $email = (string)($config['helpEmail'] ?? 'contact@deliverydave.ai');
     $privacy = (string)($config['privacyUrl'] ?? 'https://translate.deliverydave.ai/sms/privacy.html');
     $terms = (string)($config['termsUrl'] ?? 'https://translate.deliverydave.ai/sms/terms.html');
-    $en = "DeliveryDave jobsite texts. Help: {$email}\nPrivacy: {$privacy}\nTerms: {$terms}\nReply STOP to opt out, HELP for help. Msg & data rates may apply.";
-    $es = "Textos de obra de DeliveryDave. Ayuda: {$email}\nPrivacidad: {$privacy}\nTérminos: {$terms}\nResponde STOP para cancelar, HELP para ayuda. Pueden aplicar tarifas de mensajes y datos.";
+    $en = "DD Text. Help: {$email}\nPrivacy: {$privacy}\nTerms: {$terms}\nReply STOP to opt out, HELP for help. Msg & data rates may apply.";
+    $es = "DD Text. Ayuda: {$email}\nPrivacidad: {$privacy}\nTérminos: {$terms}\nResponde STOP para cancelar, HELP para ayuda. Pueden aplicar tarifas de mensajes y datos.";
     if (sms_lang($lang) === 'both') {
         return $en . "\n\n" . $es;
     }
