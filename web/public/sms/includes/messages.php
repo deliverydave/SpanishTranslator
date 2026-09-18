@@ -43,25 +43,7 @@ function sms_attribution(string $senderName, string $translated, string $sourceL
 {
     $safe = str_replace(['"', '“', '”'], "'", trim($translated));
     $receive = sms_lang($targetLang);
-    $sourceName = sms_language_name($sourceLang, $receive);
-    $targetName = sms_language_name($targetLang, $receive);
-    $line = sms_in_lang(
-        $receive,
-        sprintf(
-            '%s: "%s" Original %s received and translated to %s by DeliveryDave.',
-            $senderName,
-            $safe,
-            $sourceName,
-            $targetName,
-        ),
-        sprintf(
-            '%s: "%s" %s original recibido y traducido al %s por DeliveryDave.',
-            $senderName,
-            $safe,
-            ucfirst($sourceName),
-            $targetName,
-        ),
-    );
+    $line = sprintf('%s: "%s"', $senderName, $safe);
     return $line . "\n\n" . sms_disclosure($receive);
 }
 
