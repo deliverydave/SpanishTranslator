@@ -107,8 +107,12 @@ foreach (sms_all_static_copy() as $i => $line) {
 }
 $enFwd = sms_attribution('Luis', 'I will be on site at 7.', 'es', 'en');
 $esFwd = sms_attribution('Dave', 'Estaré en la obra a las 7.', 'en', 'es');
-expect(str_contains($enFwd, 'Original Spanish received and translated to English by DeliveryDave.'), 'EN attribution format');
-expect(str_contains($esFwd, 'Inglés original recibido y traducido al español por DeliveryDave.'), 'ES attribution format');
+$enExpected = "Luis: \"I will be on site at 7.\"\n\n" . sms_disclosure('en');
+$esExpected = "Dave: \"Estaré en la obra a las 7.\"\n\n" . sms_disclosure('es');
+expect($enFwd === $enExpected, 'EN forward is Name: "quote" + blank line + disclosure');
+expect($esFwd === $esExpected, 'ES forward is Name: "quote" + blank line + disclosure');
+expect(!str_contains($enFwd, 'Original Spanish received'), 'EN has no middle attribution line');
+expect(!str_contains($esFwd, 'recibido y traducido'), 'ES has no middle attribution line');
 expect(str_contains($enFwd, 'STOP') && str_contains($enFwd, 'HELP'), 'EN disclosure has STOP/HELP');
 expect(str_contains($esFwd, 'STOP') && str_contains($esFwd, 'HELP'), 'ES disclosure has English STOP/HELP');
 expect(!str_contains($esFwd, 'ALTO') && !str_contains($esFwd, 'AYUDA PARA CANCELAR'), 'ES does not replace STOP/HELP keywords');
@@ -156,7 +160,12 @@ expect($result['forwarded'] === true, 'contact → owner is forwarded');
 expect(($result['sends'][0]['to'] ?? '') === '+15555550100', 'contact message goes to owner');
 expect(str_contains($result['sends'][0]['body'] ?? '', 'Luis:'), 'owner sees contact name');
 expect(str_contains($result['sends'][0]['body'] ?? '', 'EN('), 'translated into owner English');
-expect(str_contains($result['sends'][0]['body'] ?? '', 'Original Spanish received and translated to English by DeliveryDave.'), 'EN receive-language attribution');
+$ownerFwd = (string)($result['sends'][0]['body'] ?? '');
+expect(
+    preg_match('/^Luis: "EN\(.+\)"\n\nDeliveryDave jobsite texts\./s', $ownerFwd) === 1,
+    'EN forwarded body is Name: "quote" then blank line then disclaimers',
+);
+expect(!str_contains($ownerFwd, 'Original Spanish received'), 'EN forwarded body has no middle attribution');
 
 [$box, $send, $translate] = collect_send();
 $result = sms_handle_inbound(
@@ -169,7 +178,13 @@ expect($result['forwarded'] === true, 'owner → contact is forwarded');
 expect(($result['sends'][0]['to'] ?? '') === '+15555550101', 'owner message goes to contact');
 expect(str_contains($result['sends'][0]['body'] ?? '', 'Dave:'), 'contact sees owner name');
 expect(str_contains($result['sends'][0]['body'] ?? '', 'ES('), 'translated into contact Spanish');
-expect(str_contains($result['sends'][0]['body'] ?? '', 'STOP'), 'contact message keeps English STOP');
+$contactFwd = (string)($result['sends'][0]['body'] ?? '');
+expect(
+    preg_match('/^Dave: "ES\(.+\)"\n\nTextos de obra de DeliveryDave\./s', $contactFwd) === 1,
+    'ES forwarded body is Name: "quote" then blank line then Spanish disclaimers',
+);
+expect(!str_contains($contactFwd, 'recibido y traducido'), 'ES forwarded body has no middle attribution');
+expect(str_contains($contactFwd, 'STOP') && str_contains($contactFwd, 'HELP'), 'contact message keeps English STOP/HELP');
 
 [$box, $send, $translate] = collect_send();
 $result = sms_handle_inbound(
