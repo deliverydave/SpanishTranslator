@@ -37,7 +37,7 @@ Keywords stay **English** even when the rest of the SMS is Spanish.
 Forwarded example (owner receives English):
 
 ```
-Luis: "I'll be on site at 7."
+Luis: I'll be on site at 7.
 
 Msg & data rates may apply. Reply STOP to opt out, HELP for help.
 ```
@@ -130,8 +130,8 @@ After Hostinger + Twilio are configured, live checks:
 
 1. From a random phone: you get one polite bilingual reply; the owner does **not** get it. A second text from that phone stays silent.
 2. `HELP` → email `contact@deliverydave.ai` plus privacy/terms URLs. `STOP`/`HELP` stay English.
-3. From the **contact**: a Spanish jobsite sentence arrives to the owner as `Luis: "…"` then a blank line and the English disclosure (`STOP` / `HELP` stay English).
-4. From the **owner**: an English jobsite sentence arrives to the contact as `Dave: "…"` then a blank line and the Spanish disclosure, with `STOP` / `HELP` still in English.
+3. From the **contact**: a Spanish jobsite sentence arrives to the owner as `Luis: …` then a blank line and the English disclosure (`STOP` / `HELP` stay English).
+4. From the **owner**: an English jobsite sentence arrives to the contact as `Dave: …` then a blank line and the Spanish disclosure, with `STOP` / `HELP` still in English.
 5. `STOP` from the contact → confirm, no forward. A later owner text is not sent to the contact (owner is told they opted out). `START` from the contact resumes. `START` from a random phone does **not** join the pair.
 
 ## Config keys
