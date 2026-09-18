@@ -196,6 +196,7 @@ expect(
     'ES forwarded body is Name: "quote" then blank line then Spanish disclaimers',
 );
 expect(!str_contains($contactFwd, 'recibido y traducido'), 'ES forwarded body has no middle attribution');
+expect(!str_contains($contactFwd, 'DD Text.'), 'ES forwarded footer has no DD Text. brand');
 expect(str_contains($contactFwd, 'STOP') && str_contains($contactFwd, 'HELP'), 'contact message keeps English STOP/HELP');
 
 [$box, $send, $translate] = collect_send();
