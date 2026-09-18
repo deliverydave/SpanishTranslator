@@ -39,7 +39,7 @@ Forwarded example (owner receives English):
 ```
 Luis: "I'll be on site at 7."
 
-DD Text. Msg & data rates may apply. Reply STOP to opt out, HELP for help.
+Msg & data rates may apply. Reply STOP to opt out, HELP for help.
 ```
 
 ## Files (Hostinger PHP, same pattern as `api/chat.php`)
